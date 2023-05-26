@@ -11,6 +11,7 @@ const config = {
     filename: "server.generated.js",
     publicPath: "/dist/",
     libraryTarget: "commonjs2",
+    hashFunction: "sha512"
   },
   externals: [nodeExternals()],
   module: {

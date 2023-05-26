@@ -8,6 +8,7 @@ const config = {
     path: path.join(CURRENT_WORKING_DIR, "/dist"),
     filename: "bundle.js",
     publicPath: "/dist/",
+    hashFunction: 'sha512'
   },
   module: {
     rules: [
