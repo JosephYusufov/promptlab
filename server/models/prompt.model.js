@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 const PromptSchema = new mongoose.Schema({
-  content: {
+  text: {
     type: String,
     trim: false,
     required: "A prompt is required.",
@@ -10,6 +10,16 @@ const PromptSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  model: {
+    type: String,
+    trim: true,
+    required: "A model is required.",
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }
+
 });
 
 export default mongoose.model("Prompt", PromptSchema);

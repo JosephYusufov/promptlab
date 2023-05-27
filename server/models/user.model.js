@@ -22,7 +22,11 @@ const UserSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now
-  }
+  },
+  prompts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Prompt"
+  }]
 })
 
 UserSchema
