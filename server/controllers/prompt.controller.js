@@ -1,6 +1,5 @@
-import Prompt from '../models/prompt.model'
-import extend from 'lodash/extend'
-import errorHandler from '../helpers/dbErrorHandler'
+import Prompt from '../models/prompt.model.js'
+import errorHandler from '../helpers/dbErrorHandler.js'
 
 const create = async (req, res) => {
   let user = req.profile

@@ -1,0 +1,10 @@
+{
+    "verbose": false,
+    "watch": [
+      "./controllers",
+      "./helpers",
+      "./models",
+      "./routes"
+    ],
+    "exec": "node ./server.js"
+}

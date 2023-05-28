@@ -5,29 +5,18 @@ import cookieParser from 'cookie-parser'
 import compress from 'compression'
 import cors from 'cors'
 import helmet from 'helmet'
-import Template from './../template'
-import userRoutes from './routes/user.routes'
-import authRoutes from './routes/auth.routes'
-import promptRoutes from './routes/prompt.routes'
-
-// modules for server side rendering
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import MainRouter from './../client/MainRouter'
-import { StaticRouter } from 'react-router-dom'
-import style from './../client/index.css'
-// import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
-import theme from './../client/theme'
-//end
+import userRoutes from './routes/user.routes.js'
+import authRoutes from './routes/auth.routes.js'
+import promptRoutes from './routes/prompt.routes.js'
 
 //comment out before building for production
-import devBundle from './devBundle'
+// import devBundle from './devBundle'
 
 const CURRENT_WORKING_DIR = process.cwd()
 const app = express()
 
 //comment out before building for production
-devBundle.compile(app)
+// devBundle.compile(app)
 
 // parse body params and attache them to req.body
 app.use(bodyParser.json())
@@ -46,25 +35,25 @@ app.use('/', userRoutes)
 app.use('/', authRoutes)
 app.use('/', promptRoutes)
 
-app.get('*', (req, res) => {
-  // const sheets = new ServerStyleSheets()
-  const context = {}
-  const markup = ReactDOMServer.renderToString(
-    <StaticRouter location={req.url} context={context}>
-      {/* <ThemeProvider theme={theme}> */}
-        <MainRouter />
-      {/* </ThemeProvider> */}
-    </StaticRouter>
-  )
-    if (context.url) {
-      return res.redirect(303, context.url)
-    }
-    // const css = sheets.toString()
-    res.status(200).send(Template({
-      markup: markup,
-      css: style
-    }))
-})
+// app.get('*', (req, res) => {
+//   // const sheets = new ServerStyleSheets()
+//   const context = {}
+//   const markup = ReactDOMServer.renderToString(
+//     <StaticRouter location={req.url} context={context}>
+//       {/* <ThemeProvider theme={theme}> */}
+//         <MainRouter />
+//       {/* </ThemeProvider> */}
+//     </StaticRouter>
+//   )
+//     if (context.url) {
+//       return res.redirect(303, context.url)
+//     }
+//     // const css = sheets.toString()
+//     res.status(200).send(Template({
+//       markup: markup,
+//       css: style
+//     }))
+// })
 
 // Catch unauthorised errors
 app.use((err, req, res, next) => {
