@@ -15,6 +15,9 @@ const MainRouter = () => {
     return (<div>
       {/* <Menu /> */}
       <TwNav />
+      <main>
+          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+
       <Routes>
         <Route exact path="/" element={<Home/>}/>
         <Route path="/users" element={<Users/>}/>
@@ -26,6 +29,8 @@ const MainRouter = () => {
         <Route path="/user/:userId" element={<Profile/>}/>
         <Route path="/prompts/:userId" element={<Prompts/>}/>
       </Routes>
+        </div>
+    </main>
     </div>)
 }
 
