@@ -4,6 +4,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom'
 
 const Menu = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const isActive = (location, path) => {
     if (location.pathname == path)
       return {color: '#ff4081'}
@@ -47,7 +48,7 @@ const Menu = () => {
             <button style={isActive(location, "/user/" + auth.isAuthenticated().user._id)}>Prompts</button>
           </Link>
           <button color="inherit" onClick={() => {
-              auth.clearJWT(() => location('/'))
+              auth.clearJWT(() => navigate('/'))
             }}>Sign out</button>
         </span>)
       }
