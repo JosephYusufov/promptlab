@@ -3,7 +3,6 @@ import auth from './../auth/auth-helper'
 import {Link, useLocation, useNavigate} from 'react-router-dom'
 
 const Menu = () => {
-  const navigate = useNavigate()
   const location = useLocation()
   const isActive = (location, path) => {
     if (location.pathname == path)
@@ -14,7 +13,7 @@ const Menu = () => {
   
   return (
     
-  <div position="static">
+  <div position="static" className=''>
     <div>
       <h6 variant="h6" color="inherit">
         MERN Skeleton

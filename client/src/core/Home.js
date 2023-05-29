@@ -1,10 +1,10 @@
 import React from 'react'
 import unicornbikeImg from './../assets/images/unicornbike.jpg'
-import './../index.css'
+// import './../index.css'
 
 export default function Home(){
     return (
-        <div className={"text-sm font-medium text-gray-900 fart"}>
+        <div className={"text-sm font-medium text-gray-900"}>
           <h6 variant="h6">Home Page</h6>
           <div image={unicornbikeImg} title="Unicorn Bicycle"/>
           <p variant="body2" component="p" color="textSecondary">Photo by <a href="https://unsplash.com/@boudewijn_huysmans" target="_blank" rel="noopener noreferrer">Boudewijn Huysmans</a> on Unsplash</p>

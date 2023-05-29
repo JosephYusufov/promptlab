@@ -9,10 +9,12 @@ import Profile from './user/Profile'
 import Prompts from './prompts/Prompts'
 import PrivateRoute from './auth/PrivateRoute'
 import Menu from './core/Menu'
+import TwNav from './core/TwNav'
 
 const MainRouter = () => {
     return (<div>
-      <Menu/>
+      {/* <Menu /> */}
+      <TwNav />
       <Routes>
         <Route exact path="/" element={<Home/>}/>
         <Route path="/users" element={<Users/>}/>
