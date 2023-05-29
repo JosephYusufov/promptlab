@@ -14,15 +14,15 @@ const MainRouter = () => {
     return (<div>
       <Menu/>
       <Routes>
-        <Route exact path="/" component={Home}/>
-        <Route path="/users" component={Users}/>
-        <Route path="/signup" component={Signup}/>
-        <Route path="/signin" component={Signin}/>
+        <Route exact path="/" element={<Home/>}/>
+        <Route path="/users" element={<Users/>}/>
+        <Route path="/signup" element={<Signup/>}/>
+        <Route path="/signin" element={<Signin/>}/>
         <Route path="/user/edit/:userId" element={
           <PrivateRoute element={<EditProfile/>}/>
         }/>
-        <Route path="/user/:userId" component={Profile}/>
-        <Route path="/prompts/:userId" component={Prompts}/>
+        <Route path="/user/:userId" element={<Profile/>}/>
+        <Route path="/prompts/:userId" element={<Prompts/>}/>
       </Routes>
     </div>)
 }

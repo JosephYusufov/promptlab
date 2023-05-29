@@ -1,6 +1,8 @@
+const backendUri = window.location.protocol + '//' + window.location.hostname + ':3001'
+
 const signin = async (user) => {
   try {
-    let response = await fetch('/auth/signin/', {
+    let response = await fetch(backendUri + '/auth/signin/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -17,7 +19,7 @@ const signin = async (user) => {
 
 const signout = async () => {
   try {
-    let response = await fetch('/auth/signout/', { method: 'GET' })
+    let response = await fetch(backendUri + '/auth/signout/', { method: 'GET' })
     return await response.json()
   } catch(err) {
     console.log(err)

@@ -21,6 +21,7 @@ export default function Signin(props) {
       if (data.error) {
         setValues({ ...values, error: data.error})
       } else {
+        console.log(data)
         auth.authenticate(data, () => {
           setValues({ ...values, error: '',redirectToReferrer: true})
         })
@@ -32,14 +33,14 @@ export default function Signin(props) {
     setValues({ ...values, [name]: event.target.value })
   }
 
-  const {from} = props.location.state || {
-      from: {
-        pathname: '/'
-      }
-  }
+  // const {from} = props.location.state || {
+  //     from: {
+  //       pathname: '/'
+  //     }
+  // }
   const {redirectToReferrer} = values
   if (redirectToReferrer) {
-      return (<Navigate to={from}/>)
+      return (<Navigate to={'/'}/>)
   }
 
   return (

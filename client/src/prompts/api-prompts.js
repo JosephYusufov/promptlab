@@ -1,6 +1,8 @@
+const backendUri = window.location.protocol + '//' + window.location.hostname + ':3001'
+
 const create = async (prompt, params, credentials, signal) => {
   try {
-      let response = await fetch('/api/prompts/user/' + params.userId, {
+      let response = await fetch(backendUri + '/api/prompts/user/' + params.userId, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

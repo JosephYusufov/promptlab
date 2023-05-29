@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import DeleteUser from './DeleteUser'
 import auth from './../auth/auth-helper'
 import {read} from './api-user.js'
-import {Navigate, Link} from 'react-router-dom'
+import {Navigate, Link, useParams } from 'react-router-dom'
 
-export default function Profile({ match }) {
+export default function Profile() {
+  const params = useParams()
   const [user, setUser] = useState({})
   const [redirectToSignin, setRedirectToSignin] = useState(false)
   const jwt = auth.isAuthenticated()
@@ -13,10 +14,12 @@ export default function Profile({ match }) {
     const abortController = new AbortController()
     const signal = abortController.signal
 
+    console.log(jwt)
     read({
-      userId: match.params.userId
+      userId: params.userId
     }, {t: jwt.token}, signal).then((data) => {
       if (data && data.error) {
+        console.log(data.error)
         setRedirectToSignin(true)
       } else {
         setUser(data)
@@ -27,7 +30,7 @@ export default function Profile({ match }) {
       abortController.abort()
     }
 
-  }, [match.params.userId])
+  }, [params.userId])
   
     if (redirectToSignin) {
       return <Navigate to='/signin'/>

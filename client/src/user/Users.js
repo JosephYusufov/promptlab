@@ -13,6 +13,7 @@ export default function Users() {
       if (data && data.error) {
         console.log(data.error)
       } else {
+        console.log(data)
         setUsers(data)
       }
     })
@@ -28,12 +29,12 @@ export default function Users() {
         <h6 variant="h6">
           All Users
         </h6>
-        <div dense>
+        <div>
          {users.map((item, i) => {
           return <Link to={"/user/" + item._id} key={i}>
-                    <div button>
-                      <p primary={item.name}/>
-                    </div>
+                    <button>
+                      <p>{item.name}</p>
+                    </button>
                  </Link>
                })
              }
