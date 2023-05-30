@@ -1,0 +1,4 @@
+2023-5-30 | Joseph Yusufov
+- Created SinglePrompt page
+- Styling of Home, Signin, Signup, Prompts pages, as well as Menu
+
