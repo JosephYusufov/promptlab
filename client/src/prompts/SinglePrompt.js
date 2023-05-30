@@ -6,12 +6,12 @@ import CreatePrompt from "./CreatePrompt";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-export default function Prompts() {
+export default function SinglePrompt() {
   const params = useParams();
   const [prompts, setPrompts] = useState([]);
   const [open, setOpen] = useState(false);
   const jwt = auth.isAuthenticated();
-  dayjs.extend(relativeTime);
+  //   dayjs.extend(relativeTime);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -107,7 +107,7 @@ export default function Prompts() {
           return (
             <li className="hello" key={`prompt-${i}`}>
               <Link
-                to={`/prompts/${params.userId}/prompt/${p._id}`}
+                to="/"
                 className="flex justify-between items-center gap-x-6 p-5 rounded-md bg-slate-900 shadow-sm hover:bg-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 <div class="flex gap-x-4">

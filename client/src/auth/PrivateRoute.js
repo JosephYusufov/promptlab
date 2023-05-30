@@ -1,31 +1,40 @@
-import React, { Component } from 'react'
-import { Route, Navigate } from 'react-router-dom'
-import auth from './auth-helper'
+import React, { Component, useEffect, useState } from "react";
+import { Route, Navigate } from "react-router-dom";
+import auth from "./auth-helper";
 
-// const PrivateRoute = ({ component: Component, ...rest }) => {
-  const PrivateRoute = ({ children }) => {
-  //  if(auth.isAuthenticated){
-  //   return <Route {...rest} render={props => {<Component {...props}/>}}/> 
-  //  } else {
-  //   return <Route {...rest} render={props => {<Navigate to={{
-  //     pathname: '/signin',
-  //     state: { from: props.location }
-  //   }}/>
-  //   }} />
-  // }
-  auth.isAuthenticated? <> {children} </> : <Navigate to={{pathname: '/signin', state: { /*from: props.location*/ }}}/>
-  //  <Route {...rest} 
-  //  render={props => (
-  //   auth.isAuthenticated() ? (
-  //     <Component {...props}/>
-  //   ) : (
-  //     <Navigate to={{
-  //       pathname: '/signin',
-  //       state: { from: props.location }
-  //     }}/>
-  //   )
-  // )}
-  // />
-}
+const PrivateRoute = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-export default PrivateRoute
+  useEffect(() => {
+    setIsAuthenticated(auth.isAuthenticated);
+  }, []);
+  return isAuthenticated ? (
+    <> {children} </>
+  ) : isAuthenticated == null ? (
+    <div className={"flex justify-center items-center mt-10"}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="#4f46e5"
+        className="w-6 h-6 animate-spin"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+        />
+      </svg>
+    </div>
+  ) : (
+    <Navigate
+      to={{
+        pathname: "/signin",
+        state: {},
+      }}
+    />
+  );
+};
+
+export default PrivateRoute;

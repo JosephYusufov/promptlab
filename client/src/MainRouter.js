@@ -7,8 +7,8 @@ import Signin from "./auth/Signin";
 import EditProfile from "./user/EditProfile";
 import Profile from "./user/Profile";
 import Prompts from "./prompts/Prompts";
+import SinglePrompt from "./prompts/SinglePrompt";
 import PrivateRoute from "./auth/PrivateRoute";
-import Menu from "./core/Menu";
 import TwNav from "./core/TwNav";
 
 const MainRouter = () => {
@@ -25,10 +25,36 @@ const MainRouter = () => {
             <Route path="/signin" element={<Signin />} />
             <Route
               path="/user/edit/:userId"
-              element={<PrivateRoute element={<EditProfile />} />}
+              element={
+                <PrivateRoute>
+                  <EditProfile />
+                </PrivateRoute>
+              }
             />
-            <Route path="/user/:userId" element={<Profile />} />
-            <Route path="/prompts/:userId" element={<Prompts />} />
+            <Route
+              path="/user/:userId"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/prompts/:userId"
+              element={
+                <PrivateRoute>
+                  <Prompts />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/prompts/:userId/prompt/:promptId"
+              element={
+                <PrivateRoute>
+                  <SinglePrompt />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </div>
       </main>
