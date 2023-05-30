@@ -17,9 +17,12 @@ const PromptSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  }
-
+    ref: "User",
+  },
+  intent: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Intent1",
+  },
 });
 
 export default mongoose.model("Prompt", PromptSchema);

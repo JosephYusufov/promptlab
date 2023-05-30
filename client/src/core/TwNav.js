@@ -38,6 +38,7 @@ export default function TwNav() {
       setMenuItems([
         { name: "Profile", href: "/user/" + userId },
         { name: "Prompts", href: "/prompts/" + userId },
+        { name: "Intents", href: "/intents/" + userId },
         {
           name: "Sign Out",
           href: "#",

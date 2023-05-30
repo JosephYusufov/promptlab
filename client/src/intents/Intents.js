@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import auth from "./../auth/auth-helper";
 import { Navigate, Link, useParams } from "react-router-dom";
-import { list } from "./api-prompts";
-import CreatePrompt from "./CreatePrompt";
+import { list } from "./api-intents";
+import CreateIntent from "./CreateIntent";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-export default function Prompts() {
+export default function Intents() {
   const params = useParams();
-  const [prompts, setPrompts] = useState([]);
+  const [intents, setIntents] = useState([]);
+  const [noIntents, setNoIntents] = useState(false);
   const [open, setOpen] = useState(false);
   const jwt = auth.isAuthenticated();
   dayjs.extend(relativeTime);
@@ -28,7 +29,8 @@ export default function Prompts() {
       if (data && data.error) {
         console.log(data.error);
       } else {
-        setPrompts(data);
+        if (!data.length) setNoIntents(true);
+        setIntents(data);
       }
     });
     return function cleanup() {
@@ -36,7 +38,7 @@ export default function Prompts() {
     };
   }, [params.userId]);
 
-  const onPromptCreated = () => {
+  const onIntentCreated = () => {
     list(
       {
         userId: params.userId,
@@ -48,7 +50,9 @@ export default function Prompts() {
       if (data && data.error) {
         console.log(data.error);
       } else {
-        setPrompts(data);
+        if (!data.length) setNoIntents(true);
+        else setNoIntents(false);
+        setIntents(data);
       }
     });
   };
@@ -56,7 +60,7 @@ export default function Prompts() {
     <>
       <div className="flex justify-between items-center">
         <h2 className="mt-10 mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
-          Prompts
+          Intents
         </h2>
         <button
           type="button"
@@ -75,16 +79,16 @@ export default function Prompts() {
           New
         </button>
       </div>
-      <CreatePrompt
+      <CreateIntent
         className="mb-10"
         params={params}
         credentials={{ t: jwt.token }}
-        cb={onPromptCreated}
+        cb={onIntentCreated}
         open={open}
         setOpen={setOpen}
       />
       {/* Loading wheel */}
-      {!prompts.length && (
+      {!intents.length && !noIntents && (
         <div className={"flex justify-center items-center mt-10"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -102,25 +106,32 @@ export default function Prompts() {
           </svg>
         </div>
       )}
+      {noIntents && (
+        <div className="p-5 rounded-md bg-slate-900 shadow-sm">
+          <h1 className="text-center text-md dark:text-white">
+            You have no Intents yet.
+          </h1>
+        </div>
+      )}
       <ul role="list" class="divide-y-4 divide-transparent ">
-        {prompts.map((p, i) => {
+        {intents.map((intent, idx) => {
           return (
-            <li className="hello" key={`prompt-${i}`}>
+            <li className="hello" key={`intent-${idx}`}>
               <Link
-                to={`/prompts/${params.userId}/prompt/${p._id}`}
+                to={`/intents/${params.userId}/intent/${intent._id}`}
                 className="flex justify-between items-center gap-x-6 p-5 rounded-md bg-slate-900 shadow-sm hover:bg-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 <div class="w-5/6 flex gap-x-4">
                   <div class="w-full min-w-0 flex-auto">
                     <p className="w-full truncate text-md leading-6 text-gray-500 dark:text-white">
-                      {p.text}
+                      {intent.name}
                     </p>
                     <p class="text-xs font-semibold leading-5 text-gray-900 dark:text-gray-300">
-                      {p.model}
+                      {intent.model}
                     </p>
                     <p class="text-xs leading-5 text-gray-500 dark:text-gray-300">
-                      Created <time dateTime={p.created}></time>{" "}
-                      {dayjs(p.created).fromNow(true)} ago
+                      Created <time dateTime={intent.created}></time>{" "}
+                      {dayjs(intent.created).fromNow(true)} ago
                     </p>
                   </div>
                 </div>
