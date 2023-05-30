@@ -1,6 +1,7 @@
 const backendUri = window.location.protocol + '//' + window.location.hostname + ':3001'
 
 const create = async (prompt, params, credentials, signal) => {
+  console.log(credentials)
   try {
       let response = await fetch(backendUri + '/api/prompts/user/' + params.userId, {
         method: 'POST',
@@ -10,24 +11,27 @@ const create = async (prompt, params, credentials, signal) => {
           'Authorization': 'Bearer ' + credentials.t
         },
         body: JSON.stringify(prompt)
-      })
+      })  
     return await response.json()
   } catch(err) {
     console.log(err)
   }
 }
 
-// const list = async (signal) => {
-//   try {
-//     let response = await fetch('/api/users/', {
-//       method: 'GET',
-//       signal: signal,
-//     })
-//     return await response.json()
-//   } catch(err) {
-//     console.log(err)
-//   }
-// }
+const list = async (params, credentials, signal) => {
+  try {
+    let response = await fetch(backendUri + '/api/prompts/user/' + params.userId, {
+      method: 'GET',
+      // signal: signal,
+      headers: {
+        'Authorization': 'Bearer ' + credentials.t
+      }
+    })
+    return await response.json()  
+  } catch(err) {
+    console.log(err)
+  }
+}
 
 // const read = async (params, credentials, signal) => {
 //   try {
@@ -81,7 +85,7 @@ const create = async (prompt, params, credentials, signal) => {
 
 export {
   create,
-  // list,
+  list,
   // read,
   // update,
   // remove

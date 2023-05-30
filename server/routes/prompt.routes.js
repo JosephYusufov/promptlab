@@ -6,7 +6,7 @@ import promptCtrl from '../controllers/prompt.controller.js'
 const router = express.Router()
 
 router.route('/api/prompts/user/:userId')
-  // .get(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.list)
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.list)
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.create)
   // .put(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.update)
   // .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.remove)

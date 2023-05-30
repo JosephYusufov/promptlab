@@ -23,18 +23,19 @@ const create = async (req, res) => {
 //   return res.json(req.profile)
 // }
 
-// const list = async (req, res) => {
-//   let user = req.profile
-//   console.log(user)
-//   try {
-//     let prompts = await Prompt.find().select('name email updated created')
-//     res.json(users)
-//   } catch (err) {
-//     return res.status(400).json({
-//       error: errorHandler.getErrorMessage(err)
-//     })
-//   }
-// }
+const list = async (req, res) => {
+  let user = req.profile
+  console.log(user)
+  try {
+    let prompts = await Prompt.find({user: user._id}).exec()
+    console.log(prompts)
+    res.json(prompts)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
 
 // const update = async (req, res) => {
 //   try {
@@ -70,7 +71,7 @@ export default {
   create,
   // userByID,
   // read,
-  // list,
+  list,
   // remove,
   // update
 }
