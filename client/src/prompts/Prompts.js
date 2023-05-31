@@ -55,7 +55,7 @@ export default function Prompts() {
   return (
     <>
       <div className="flex justify-between items-center">
-        <h2 className="mt-10 mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
+        <h2 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
           Prompts
         </h2>
         <button
@@ -108,15 +108,15 @@ export default function Prompts() {
             <li className="hello" key={`prompt-${i}`}>
               <Link
                 to={`/prompts/${params.userId}/prompt/${p._id}`}
-                className="flex justify-between items-center gap-x-6 p-5 rounded-md bg-slate-900 shadow-sm hover:bg-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex justify-between items-center gap-x-6 p-3 rounded-md bg-slate-900 shadow-sm hover:bg-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 <div class="w-5/6 flex gap-x-4">
                   <div class="w-full min-w-0 flex-auto">
+                    <p class="mb-2 text-xs font-semibold leading-5 text-gray-900 dark:text-gray-300">
+                      {p.model}
+                    </p>
                     <p className="w-full truncate text-md leading-6 text-gray-500 dark:text-white">
                       {p.text}
-                    </p>
-                    <p class="text-xs font-semibold leading-5 text-gray-900 dark:text-gray-300">
-                      {p.model}
                     </p>
                     <p class="text-xs leading-5 text-gray-500 dark:text-gray-300">
                       Created <time dateTime={p.created}></time>{" "}

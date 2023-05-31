@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import auth from "./../auth/auth-helper";
 
 const user = {
@@ -44,8 +44,8 @@ export default function TwNav() {
           href: "#",
           onClick: () => {
             auth.clearJWT(() => {
-              setUserId("");
               navigate("/");
+              setUserId("");
             });
           },
         },

@@ -1,6 +1,22 @@
 import Intent from "../models/intent.model.js";
 import errorHandler from "../helpers/dbErrorHandler.js";
 
+const intentById = async (req, res, next, id) => {
+  try {
+    let intent = await Intent.findById(id);
+    if (!intent)
+      return res.status(400).json({
+        error: "Intent not found",
+      });
+    req.intent = intent;
+    next();
+  } catch (err) {
+    return res.status(400).json({
+      error: "Could not retrieve intent",
+    });
+  }
+};
+
 const create = async (req, res) => {
   let user = req.profile;
   let intent = new Intent({ ...req.body, user: user._id });
@@ -16,11 +32,10 @@ const create = async (req, res) => {
   }
 };
 
-// const read = (req, res) => {
-//   req.profile.hashed_password = undefined
-//   req.profile.salt = undefined
-//   return res.json(req.profile)
-// }
+const read = (req, res) => {
+  console.log(req.intent);
+  return res.json(req.intent);
+};
 
 const list = async (req, res) => {
   let user = req.profile;
@@ -68,9 +83,9 @@ const list = async (req, res) => {
 
 export default {
   create,
-  // userByID,
-  // read,
+  read,
   list,
   // remove,
-  // update
+  // update,
+  intentById,
 };

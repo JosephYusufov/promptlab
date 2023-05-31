@@ -11,6 +11,7 @@ import SinglePrompt from "./prompts/SinglePrompt";
 import PrivateRoute from "./auth/PrivateRoute";
 import TwNav from "./core/TwNav";
 import Intents from "./intents/Intents";
+import SingleIntent from "./intents/SingleIntent";
 
 const MainRouter = () => {
   return (
@@ -61,6 +62,14 @@ const MainRouter = () => {
               element={
                 <PrivateRoute>
                   <Intents />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/intents/:userId/intent/:intentId"
+              element={
+                <PrivateRoute>
+                  <SingleIntent />
                 </PrivateRoute>
               }
             />

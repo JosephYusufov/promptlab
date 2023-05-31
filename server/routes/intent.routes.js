@@ -11,7 +11,11 @@ router
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, intentCtrl.create);
 // .put(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.update)
 // .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.remove)
+router
+  .route("/api/intents/user/:userId/intent/:intentId")
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, intentCtrl.read);
 
 router.param("userId", userCtrl.userByID);
+router.param("intentId", intentCtrl.intentById);
 
 export default router;
