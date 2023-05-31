@@ -20,7 +20,7 @@
    1. Open a new terminal window and navigate to `PromptLab`
    2. run `$ cd server`
    3. run `$ npm i`
-   4. run `$ npx nodemon` to run the server in development mode with auto-reload any time a file is changed.
+   4. run `$ npm start` to run the server in development mode with auto-reload any time a file is changed.
 3. To run the frontend:
    1. Open a new terminal window and navigate to `PromptLab`
    2. run `$ cd client`
