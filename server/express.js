@@ -29,7 +29,13 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "http://getpromptlab.io",
+      "http://www.getpromptlab.io",
+      "https://getpromptlab.io",
+      "https://www.getpromptlab.io",
+    ],
     credentials: true,
   })
 );
