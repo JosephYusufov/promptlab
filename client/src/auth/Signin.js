@@ -1,51 +1,55 @@
-import React, {useState} from 'react'
-import auth from './../auth/auth-helper'
-import {Link, Navigate} from 'react-router-dom'
-import {signin} from './api-auth.js'
+import React, { useEffect, useState } from "react";
+import auth from "./../auth/auth-helper";
+import { Link, Navigate } from "react-router-dom";
+import { signin } from "./api-auth.js";
 
 export default function Signin(props) {
   const [values, setValues] = useState({
-      email: '',
-      password: '',
-      error: '',
-      redirectToReferrer: false
-  })
+    email: "",
+    password: "",
+    error: "",
+    redirectToReferrer: false,
+  });
+  const jwt = auth.isAuthenticated();
 
+  useEffect(() => {}, []);
   const clickSubmit = () => {
     const user = {
       email: values.email || undefined,
-      password: values.password || undefined
-    }
+      password: values.password || undefined,
+    };
 
     signin(user).then((data) => {
       if (data.error) {
-        setValues({ ...values, error: data.error})
+        setValues({ ...values, error: data.error });
       } else {
-        console.log(data)
+        // console.log(data);
         auth.authenticate(data, () => {
-          setValues({ ...values, error: '',redirectToReferrer: true})
-        })
+          setValues({ ...values, error: "", redirectToReferrer: true });
+        });
       }
-    })
-  }
+    });
+  };
 
-  const handleChange = name => event => {
-    setValues({ ...values, [name]: event.target.value })
-  }
+  const handleChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value });
+  };
 
   // const {from} = props.location.state || {
   //     from: {
   //       pathname: '/'
   //     }
   // }
-  const {redirectToReferrer} = values
-  if (redirectToReferrer) {
-      return (<Navigate to={'/'}/>)
-  }
+  // const { redirectToReferrer } = values;
+  // if (redirectToReferrer) {
+  //   return <Navigate to={"/"} />;
+  // }
+
+  if (jwt) return <Navigate to={`/intents/${jwt.user._id}`} />;
 
   return (
-<>
-<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <>
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
@@ -60,7 +64,10 @@ export default function Signin(props) {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" method="POST">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+              >
                 Email address
               </label>
               <div className="mt-2">
@@ -69,7 +76,7 @@ export default function Signin(props) {
                   name="email"
                   type="email"
                   value={values.email}
-                  onChange={handleChange('email')}
+                  onChange={handleChange("email")}
                   autoComplete="email"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
@@ -79,11 +86,17 @@ export default function Signin(props) {
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+                >
                   Password
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <a
+                    href="#"
+                    className="font-semibold text-indigo-600 hover:text-indigo-500"
+                  >
                     Forgot password?
                   </a>
                 </div>
@@ -95,7 +108,7 @@ export default function Signin(props) {
                   type="password"
                   autoComplete="current-password"
                   value={values.password}
-                  onChange={handleChange('password')}
+                  onChange={handleChange("password")}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
                 />
@@ -114,13 +127,16 @@ export default function Signin(props) {
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500 dark:text-white">
-            New to PromptLab?{' '}
-            <Link to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+            New to PromptLab?{" "}
+            <Link
+              to="/signup"
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            >
               Create an account
             </Link>
           </p>
         </div>
       </div>
     </>
-    )
+  );
 }

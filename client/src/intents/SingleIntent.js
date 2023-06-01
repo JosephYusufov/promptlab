@@ -16,7 +16,7 @@ export default function SingleIntent({ ...props }) {
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-    console.log(params);
+    // console.log(params);
     read(
       {
         userId: params.userId,
@@ -25,7 +25,7 @@ export default function SingleIntent({ ...props }) {
       { t: jwt.token },
       signal
     ).then((data) => {
-      console.log(data);
+      // console.log(data);
       if (data && data.error) {
         console.log(data.error);
       } else {

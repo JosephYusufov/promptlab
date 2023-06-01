@@ -16,7 +16,7 @@ export default function SinglePrompt() {
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-    console.log(params);
+    // console.log(params);
     list(
       {
         userId: params.userId,
@@ -24,7 +24,7 @@ export default function SinglePrompt() {
       { t: jwt.token },
       signal
     ).then((data) => {
-      console.log(data);
+      // console.log(data);
       if (data && data.error) {
         console.log(data.error);
       } else {
@@ -44,7 +44,7 @@ export default function SinglePrompt() {
       { t: jwt.token },
       undefined
     ).then((data) => {
-      console.log(data);
+      // console.log(data);
       if (data && data.error) {
         console.log(data.error);
       } else {
@@ -102,7 +102,7 @@ export default function SinglePrompt() {
           </svg>
         </div>
       )}
-      <ul role="list" class="divide-y-4 divide-transparent ">
+      <ul role="list" className="divide-y-4 divide-transparent ">
         {prompts.map((p, i) => {
           return (
             <li className="hello" key={`prompt-${i}`}>
@@ -110,15 +110,15 @@ export default function SinglePrompt() {
                 to="/"
                 className="flex justify-between items-center gap-x-6 p-5 rounded-md bg-slate-900 shadow-sm hover:bg-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                <div class="flex gap-x-4">
-                  <div class="min-w-0 flex-auto">
-                    <p class="truncate text-md leading-6 text-gray-500 dark:text-white">
+                <div className="flex gap-x-4">
+                  <div className="min-w-0 flex-auto">
+                    <p className="truncate text-md leading-6 text-gray-500 dark:text-white">
                       {p.text}
                     </p>
-                    <p class="text-xs font-semibold leading-5 text-gray-900 dark:text-gray-300">
+                    <p className="text-xs font-semibold leading-5 text-gray-900 dark:text-gray-300">
                       {p.model}
                     </p>
-                    <p class="text-xs leading-5 text-gray-500 dark:text-gray-300">
+                    <p className="text-xs leading-5 text-gray-500 dark:text-gray-300">
                       Created <time dateTime={p.created}></time>{" "}
                       {dayjs(p.created).fromNow(true)} ago
                     </p>

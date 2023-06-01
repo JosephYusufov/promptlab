@@ -33,16 +33,16 @@ const create = async (req, res) => {
 };
 
 const read = (req, res) => {
-  console.log(req.intent);
+  // console.log(req.intent);
   return res.json(req.intent);
 };
 
 const list = async (req, res) => {
   let user = req.profile;
-  console.log(user);
+  // console.log(user);
   try {
     let intents = await Intent.find({ user: user._id }).exec();
-    console.log(intents);
+    // console.log(intents);
     res.json(intents);
   } catch (err) {
     return res.status(400).json({

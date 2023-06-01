@@ -20,8 +20,8 @@ export default function CreateIntent({ ...props }) {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        console.log(data);
-        console.log("created intent");
+        // console.log(data);
+        // console.log("created intent");
         props.setOpen(false);
         props.cb();
       }
@@ -34,22 +34,22 @@ export default function CreateIntent({ ...props }) {
 
   return (
     <>
-      {/* <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+      {/* <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-  <div class="fixed inset-0 z-10 overflow-y-auto">
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg dark:bg-slate-800">
-        <div class="bg-white dark:bg-slate-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-          <div class="sm:flex sm:items-center">
-            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+  <div className="fixed inset-0 z-10 overflow-y-auto">
+    <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg dark:bg-slate-800">
+        <div className="bg-white dark:bg-slate-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+          <div className="sm:flex sm:items-center">
+            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
 
             </div>
           </div>
         </div>
-        <div class="bg-gray-50 dark:bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-          <button type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
-          <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+        <div className="bg-gray-50 dark:bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+          <button type="button" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
+          <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
         </div>
       </div>
     </div>
@@ -95,7 +95,7 @@ export default function CreateIntent({ ...props }) {
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                  <div className="bg-white dark:bg-slate-800 px-4 pb-4 pt-5 sm:p-6">
+                  <div className="bg-white dark:bg-gray-950 px-4 pb-4 pt-5 sm:p-6">
                     {/* close button */}
                     <button
                       className="absolute right-6 top-6 h-6 w-6"
@@ -118,7 +118,7 @@ export default function CreateIntent({ ...props }) {
                     </button>
                     <div className="sm:flex sm:items-start flex-col">
                       <h3
-                        class="text-base font-semibold leading-8 text-gray-900 dark:text-white text-xl"
+                        className="text-base font-semibold leading-8 text-gray-900 dark:text-white text-xl"
                         id="modal-title"
                       >
                         Create an Intent

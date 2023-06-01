@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-#root{
-    @apply dark:bg-slate-800;
+#root,
+html {
+  @apply dark:bg-gray-950;
+}
+
+.pl-list-view-item:hover * {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

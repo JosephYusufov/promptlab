@@ -1,39 +1,44 @@
-import React, {useState} from 'react'
-import {create} from './api-user.js'
-import {Link} from 'react-router-dom'
+import React, { useState } from "react";
+import { create } from "./api-user.js";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import auth from "../auth/auth-helper.js";
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [values, setValues] = useState({
-    name: '',
-    password: '',
-    email: '',
+    name: "",
+    password: "",
+    email: "",
     open: false,
-    error: ''
-  })
+    error: "",
+  });
+  const jwt = auth.isAuthenticated();
 
-  const handleChange = name => event => {
-    setValues({ ...values, [name]: event.target.value })
-  }
+  const handleChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value });
+  };
 
   const clickSubmit = () => {
     const user = {
       name: values.name || undefined,
       email: values.email || undefined,
-      password: values.password || undefined
-    }
+      password: values.password || undefined,
+    };
     create(user).then((data) => {
-      console.log(data)
+      // console.log(data);
       if (data.error) {
-        setValues({ ...values, error: data.error})
+        setValues({ ...values, error: data.error });
       } else {
-        setValues({ ...values, error: '', open: true})
+        navigate("/signin");
+        setValues({ ...values, error: "", open: true });
       }
-    })
-  }
+    });
+  };
 
-    return (
-<>
-<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+  if (jwt) return <Navigate to={`/intents/${jwt.user._id}`} />;
+  return (
+    <>
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
@@ -48,7 +53,10 @@ export default function Signup() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" method="POST">
             <div>
-              <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
+              <label
+                htmlFor="fullname"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+              >
                 Full Name
               </label>
               <div className="mt-2">
@@ -57,7 +65,7 @@ export default function Signup() {
                   name="fullname"
                   type="text"
                   value={values.name}
-                  onChange={handleChange('name')}
+                  onChange={handleChange("name")}
                   autoComplete="name"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
@@ -66,7 +74,10 @@ export default function Signup() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+              >
                 Email address
               </label>
               <div className="mt-2">
@@ -75,7 +86,7 @@ export default function Signup() {
                   name="email"
                   type="email"
                   value={values.email}
-                  onChange={handleChange('email')}
+                  onChange={handleChange("email")}
                   autoComplete="email"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
@@ -85,7 +96,10 @@ export default function Signup() {
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+                >
                   Password
                 </label>
               </div>
@@ -96,7 +110,7 @@ export default function Signup() {
                   type="password"
                   autoComplete="current-password"
                   value={values.password}
-                  onChange={handleChange('password')}
+                  onChange={handleChange("password")}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
                 />
@@ -115,14 +129,16 @@ export default function Signup() {
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500 dark:text-white">
-            Already have an account?{' '}
-            <Link to="/signin" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+            Already have an account?{" "}
+            <Link
+              to="/signin"
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            >
               Sign in
             </Link>
           </p>
         </div>
       </div>
     </>
-
-    )
+  );
 }

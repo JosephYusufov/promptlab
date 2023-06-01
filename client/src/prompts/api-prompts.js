@@ -1,37 +1,44 @@
-const backendUri = window.location.protocol + '//' + window.location.hostname + ':3001'
+const backendUri =
+  window.location.protocol + "//" + window.location.hostname + ":3001";
 
 const create = async (prompt, params, credentials, signal) => {
-  console.log(credentials)
+  // console.log(credentials)
   try {
-      let response = await fetch(backendUri + '/api/prompts/user/' + params.userId, {
-        method: 'POST',
+    let response = await fetch(
+      backendUri + "/api/prompts/user/" + params.userId,
+      {
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + credentials.t
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
         },
-        body: JSON.stringify(prompt)
-      })  
-    return await response.json()
-  } catch(err) {
-    console.log(err)
+        body: JSON.stringify(prompt),
+      }
+    );
+    return await response.json();
+  } catch (err) {
+    console.log(err);
   }
-}
+};
 
 const list = async (params, credentials, signal) => {
   try {
-    let response = await fetch(backendUri + '/api/prompts/user/' + params.userId, {
-      method: 'GET',
-      // signal: signal,
-      headers: {
-        'Authorization': 'Bearer ' + credentials.t
+    let response = await fetch(
+      backendUri + "/api/prompts/user/" + params.userId,
+      {
+        method: "GET",
+        // signal: signal,
+        headers: {
+          Authorization: "Bearer " + credentials.t,
+        },
       }
-    })
-    return await response.json()  
-  } catch(err) {
-    console.log(err)
+    );
+    return await response.json();
+  } catch (err) {
+    console.log(err);
   }
-}
+};
 
 // const read = async (params, credentials, signal) => {
 //   try {
@@ -89,4 +96,4 @@ export {
   // read,
   // update,
   // remove
-}
+};

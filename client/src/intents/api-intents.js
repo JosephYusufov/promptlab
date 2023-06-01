@@ -2,7 +2,7 @@ const backendUri =
   window.location.protocol + "//" + window.location.hostname + ":3001";
 
 const create = async (intent, params, credentials, signal) => {
-  console.log(credentials);
+  // console.log(credentials);
   try {
     let response = await fetch(
       backendUri + "/api/intents/user/" + params.userId,

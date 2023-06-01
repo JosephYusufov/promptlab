@@ -1,21 +1,20 @@
-import Prompt from '../models/prompt.model.js'
-import errorHandler from '../helpers/dbErrorHandler.js'
+import Prompt from "../models/prompt.model.js";
+import errorHandler from "../helpers/dbErrorHandler.js";
 
 const create = async (req, res) => {
-  let user = req.profile
-  let prompt = new Prompt({...req.body, user: user._id})
+  let user = req.profile;
+  let prompt = new Prompt({ ...req.body, user: user._id });
   try {
-    await prompt.save()
+    await prompt.save();
     return res.status(200).json({
-      message: "Succesfully created a new prompt."
-    })
+      message: "Succesfully created a new prompt.",
+    });
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    })
+      error: errorHandler.getErrorMessage(err),
+    });
   }
-}
-
+};
 
 // const read = (req, res) => {
 //   req.profile.hashed_password = undefined
@@ -24,18 +23,18 @@ const create = async (req, res) => {
 // }
 
 const list = async (req, res) => {
-  let user = req.profile
-  console.log(user)
+  let user = req.profile;
+  // console.log(user)
   try {
-    let prompts = await Prompt.find({user: user._id}).exec()
-    console.log(prompts)
-    res.json(prompts)
+    let prompts = await Prompt.find({ user: user._id }).exec();
+    // console.log(prompts);
+    res.json(prompts);
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    })
+      error: errorHandler.getErrorMessage(err),
+    });
   }
-}
+};
 
 // const update = async (req, res) => {
 //   try {
@@ -74,4 +73,4 @@ export default {
   list,
   // remove,
   // update
-}
+};
