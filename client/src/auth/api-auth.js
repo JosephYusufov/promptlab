@@ -3,7 +3,7 @@ const backendUri =
   "//" +
   (window.location.hostname == "localhost"
     ? "localhost:3001"
-    : `api.${window.location.hostname}`);
+    : `api.${window.location.hostname.replace("www.", "")}`);
 
 const signin = async (user) => {
   try {
