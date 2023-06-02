@@ -31,8 +31,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "http://getpromptlab.io",
-      "http://www.getpromptlab.io",
+      "https://getpromptlab.io",
+      "https://www.getpromptlab.io",
       "https://getpromptlab.io",
       "https://www.getpromptlab.io",
     ],
