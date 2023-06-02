@@ -1,5 +1,9 @@
 const backendUri =
-  window.location.protocol + "//" + window.location.hostname + ":3001";
+  window.location.protocol +
+  "//" +
+  (window.location.hostname == "localhost"
+    ? "localhost:3001"
+    : `api.${window.location.hostname}`);
 
 const create = async (prompt, params, credentials, signal) => {
   // console.log(credentials)
