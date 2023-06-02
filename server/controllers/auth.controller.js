@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import { expressjwt } from "express-jwt";
 import jwt from "jsonwebtoken";
-import config from "./../config.js";
+import config from "../config.js";
 
 const signin = async (req, res) => {
   try {
