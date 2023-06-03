@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { create } from "./api-user.js";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import auth from "../auth/auth-helper.js";
+import { Transition } from "@headlessui/react";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -53,6 +55,23 @@ export default function Signup() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+            show={values.error != ""}
+          >
+            <div className="flex justify-start items-center border border-red-600 p-2 mb-4 bg-red-950/50 rounded">
+              <ExclamationCircleIcon className="w-5 h-5 text-red-600 mr-2" />
+              <p className="text-base text-sm font-medium leading-6 text-white">
+                {values.error}
+              </p>
+            </div>
+          </Transition>
           <form className="space-y-6" action="#" method="POST">
             <div>
               <label

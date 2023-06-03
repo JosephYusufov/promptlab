@@ -10,12 +10,12 @@ const IntentSchema = new mongoose.Schema({
     trim: true,
     required: "A model is required.",
   },
-  prompts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Prompt",
-    },
-  ],
+  // prompts: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "Prompt",
+  //   },
+  // ],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -27,4 +27,11 @@ const IntentSchema = new mongoose.Schema({
   },
 });
 
+IntentSchema.virtual("prompts", {
+  ref: "Prompt",
+  localField: "_id",
+  foreignField: "intent",
+});
+IntentSchema.set("toObject", { virtuals: true });
+IntentSchema.set("toJSON", { virtuals: true });
 export default mongoose.model("Intent", IntentSchema);

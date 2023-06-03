@@ -16,7 +16,7 @@ const ListView = ({ ...props }) => {
   }, [props]);
 
   return (
-    <>
+    <div className={props.className}>
       {/* No data, but it is still being loaded */}
       {data && data.length == 0 && !noData && (
         <div className={"flex justify-center items-center mt-10"}>
@@ -47,10 +47,10 @@ const ListView = ({ ...props }) => {
             return (
               <li key={`item-${i}`} className="pl-list-view-item">
                 <Link
-                  to={item[linkKey]}
+                  to={linkKey ? item[linkKey] : "#"}
                   className="flex justify-between items-center gap-x-6 py-3 rounded-sm bg-inherit shadow-sm hover:decoration-solid focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  <div className="w-5/6 flex gap-x-4">
+                  <div className="flex gap-x-4 w-5/6">
                     <div className="w-full min-w-0 flex-auto">
                       <p className=" my-1 w-full truncate text-lg leading-6 text-gray-500 dark:text-white">
                         {item[contentKeys[0]]}
@@ -98,7 +98,7 @@ const ListView = ({ ...props }) => {
           })}
         </ul>
       )}
-    </>
+    </div>
   );
 };
 

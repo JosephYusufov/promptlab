@@ -6,6 +6,7 @@ export default function CreatePrompt({ ...props }) {
   const [values, setValues] = useState({
     text: "",
     model: "",
+    intent: "",
     error: "",
   });
   // const [open, setOpen] = useState(false)
@@ -16,14 +17,15 @@ export default function CreatePrompt({ ...props }) {
     const prompt = {
       text: values.text || undefined,
       model: values.model || undefined,
+      intent: props.params.intentId || undefined,
     };
 
     create(prompt, props.params, props.credentials, undefined).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        // console.log(data);
-        // console.log("created prompt");
+        console.log(data);
+        console.log("created prompt");
         props.setOpen(false);
         props.cb();
       }

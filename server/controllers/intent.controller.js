@@ -3,11 +3,12 @@ import errorHandler from "../helpers/dbErrorHandler.js";
 
 const intentById = async (req, res, next, id) => {
   try {
-    let intent = await Intent.findById(id);
+    let intent = await Intent.findById(id).populate("prompts");
     if (!intent)
       return res.status(400).json({
         error: "Intent not found",
       });
+    console.log(intent);
     req.intent = intent;
     next();
   } catch (err) {

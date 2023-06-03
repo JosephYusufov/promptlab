@@ -21,7 +21,7 @@ const PromptSchema = new mongoose.Schema({
   },
   intent: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Intent1",
+    ref: "Intent",
   },
 });
 
