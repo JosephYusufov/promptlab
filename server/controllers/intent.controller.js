@@ -8,7 +8,7 @@ const intentById = async (req, res, next, id) => {
       return res.status(400).json({
         error: "Intent not found",
       });
-    console.log(intent);
+    // console.log(intent);
     req.intent = intent;
     next();
   } catch (err) {

@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Intent from "./intent.model.js";
+import dbErrorHandler from "../helpers/dbErrorHandler.js";
 const PromptSchema = new mongoose.Schema({
   text: {
     type: String,
@@ -15,6 +17,10 @@ const PromptSchema = new mongoose.Schema({
     trim: true,
     required: "A model is required.",
   },
+  generation: {
+    type: Number,
+    required: "A generation is required",
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -23,6 +29,26 @@ const PromptSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Intent",
   },
+});
+
+PromptSchema.pre("validate", async function (next) {
+  console.log("middleware");
+  // console.log("this");
+  console.log(this);
+  let intentId = this.intent;
+  // console.log("intentId ");
+  // console.log(intentId);
+  try {
+    let intent = await Intent.findById(intentId);
+    this.generation = intent.version + 1;
+    intent.version += 1;
+    await intent.save();
+    console.log(this);
+    next();
+  } catch (err) {
+    console.log(dbErrorHandler.getErrorMessage(err));
+  }
+  // next();
 });
 
 export default mongoose.model("Prompt", PromptSchema);

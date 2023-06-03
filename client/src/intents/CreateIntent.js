@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { create } from "./api-intents";
 import { Dialog, Transition } from "@headlessui/react";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 export default function CreateIntent({ ...props }) {
   const [values, setValues] = useState({
@@ -123,7 +124,25 @@ export default function CreateIntent({ ...props }) {
                       >
                         Create an Intent
                       </h3>
-                      <div className="mt-10 mb-5 sm:mx-auto sm:w-full sm:max-w-sm">
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                        show={values.error != ""}
+                      >
+                        <div className="flex justify-start items-center border border-red-600 mt-5 p-2 w-full bg-red-950/50 rounded">
+                          <ExclamationCircleIcon className="w-5 h-5 text-red-600 mr-2" />
+                          <p className="text-base text-sm font-medium leading-6 text-white">
+                            {values.error}
+                          </p>
+                        </div>
+                      </Transition>
+
+                      <div className="mt-10 mb-5 sm:mx-auto sm:w-full">
                         <form className="space-y-6" action="#" method="POST">
                           <div>
                             <label

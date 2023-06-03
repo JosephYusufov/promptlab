@@ -6,7 +6,11 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ListView from "../elements/ListView";
 import CreatePrompt from "../prompts/CreatePrompt";
-import { CubeTransparentIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import {
+  CubeTransparentIcon,
+  CalendarIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 
 export default function SingleIntent({ ...props }) {
   const params = useParams();
@@ -59,7 +63,11 @@ export default function SingleIntent({ ...props }) {
         console.log(data.error);
       } else {
         if (!data.prompts.length) setNoData(true);
+        data.prompts.map((prompt, i) => {
+          prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
+        });
         setIntent(data);
+        setNoData(false);
       }
     });
   };
@@ -114,6 +122,7 @@ export default function SingleIntent({ ...props }) {
         <CreatePrompt
           className="mb-10"
           params={params}
+          intent={intent}
           credentials={{ t: jwt.token }}
           cb={onPromptCreated}
           open={open}
@@ -130,6 +139,10 @@ export default function SingleIntent({ ...props }) {
             <p className="text-base text-gray-400">{`Created ${dayjs(
               intent.created
             ).fromNow(true)} ago`}</p>
+          </div>
+          <div className="flex justify-start items-center gap-2">
+            <ArrowPathIcon className="text-gray-400 h-5 w-5"></ArrowPathIcon>
+            <p className="text-base text-gray-400">Version {intent.version}</p>
           </div>
         </div>
       </div>

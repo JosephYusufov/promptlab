@@ -4,6 +4,23 @@ import errorHandler from "../helpers/dbErrorHandler.js";
 const create = async (req, res) => {
   let user = req.profile;
   let prompt = new Prompt({ ...req.body, user: user._id });
+
+  // fetch and update intent
+  // try {
+  //   let intent = await Intent.findById(prompt.intent);
+  //   console.log(intent);
+  //   prompt.generation = intent.version + 1;
+  //   console.log(prompt.generation);
+  //   intent.version += 1;
+  //   intent.save();
+  // } catch (err) {
+  //   return res.status(400).json({
+  //     error: errorHandler.getErrorMessage(err),
+  //   });
+  // }
+
+  // save prompt
+  // console.log(prompt);
   try {
     await prompt.save();
     return res.status(200).json({
