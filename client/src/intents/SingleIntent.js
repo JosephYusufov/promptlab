@@ -40,6 +40,7 @@ export default function SingleIntent({ ...props }) {
         if (!data.prompts.length) setNoData(true);
         data.prompts.map((prompt, i) => {
           prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
+          prompt.generation = `Generation ${prompt.generation}`;
         });
         setIntent(data);
       }
@@ -65,6 +66,7 @@ export default function SingleIntent({ ...props }) {
         if (!data.prompts.length) setNoData(true);
         data.prompts.map((prompt, i) => {
           prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
+          prompt.generation = `Generation ${prompt.generation}`;
         });
         setIntent(data);
         setNoData(false);
@@ -116,7 +118,7 @@ export default function SingleIntent({ ...props }) {
           <ListView
             data={intent.prompts}
             noData={noData}
-            contentKeys={["text", "model", "created"]}
+            contentKeys={["text", "model", "created", "generation"]}
           ></ListView>
         </div>
         <CreatePrompt

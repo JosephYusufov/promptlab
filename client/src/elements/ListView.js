@@ -72,9 +72,14 @@ const ListView = ({ ...props }) => {
 
                           {item[contentKeys[1]]}
                         </div>
-                        <div className="text-xs leading-5 text-gray-500 dark:text-gray-300">
+                        <div className="text-xs leading-5 text-gray-500 dark:text-gray-300 mr-4">
                           {item[contentKeys[2]]}
                         </div>
+                        {contentKeys.length > 3 && (
+                          <div className="text-xs leading-5 text-gray-500 dark:text-gray-300">
+                            {item[contentKeys[3]]}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

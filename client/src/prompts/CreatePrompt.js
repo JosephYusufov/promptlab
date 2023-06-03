@@ -6,8 +6,8 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 export default function CreatePrompt({ ...props }) {
   const [values, setValues] = useState({
     text: "",
-    model: "",
-    intent: "",
+    // model: "",
+    // intent: "",
     error: "",
   });
   // const [open, setOpen] = useState(false)
@@ -18,6 +18,7 @@ export default function CreatePrompt({ ...props }) {
     const prompt = {
       text: values.text || undefined,
       model: values.model || undefined,
+      model: props.intent.model || undefined,
       intent: props.params.intentId || undefined,
     };
 
@@ -118,7 +119,7 @@ export default function CreatePrompt({ ...props }) {
 
                       <div className="mt-5 mb-5 sm:mx-auto sm:w-full">
                         <form className="space-y-6" action="#" method="POST">
-                          <div>
+                          {/* <div>
                             <label
                               htmlFor="model"
                               className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
@@ -137,7 +138,7 @@ export default function CreatePrompt({ ...props }) {
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
                               />
                             </div>
-                          </div>
+                          </div> */}
 
                           <div>
                             <label

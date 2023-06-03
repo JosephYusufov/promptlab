@@ -8,6 +8,7 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     setIsAuthenticated(auth.isAuthenticated);
   }, []);
+
   return isAuthenticated ? (
     <> {children} </>
   ) : isAuthenticated == null ? (
