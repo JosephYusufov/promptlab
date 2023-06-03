@@ -67,8 +67,8 @@ export default function Intents() {
   };
   return (
     <>
-      <div className="flex justify-between items-center">
-        <h2 className="mb-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
+      <div className="flex mb-6 justify-between items-center">
+        <h2 className="text-center text-2xl leading-9 tracking-tight text-gray-900 dark:text-white">
           Intents
         </h2>
         <button

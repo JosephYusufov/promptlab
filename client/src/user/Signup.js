@@ -8,6 +8,7 @@ export default function Signup() {
   const [values, setValues] = useState({
     name: "",
     password: "",
+    username: "",
     email: "",
     open: false,
     error: "",
@@ -22,6 +23,7 @@ export default function Signup() {
     const user = {
       name: values.name || undefined,
       email: values.email || undefined,
+      username: values.username || undefined,
       password: values.password || undefined,
     };
     create(user).then((data) => {
@@ -67,6 +69,26 @@ export default function Signup() {
                   value={values.name}
                   onChange={handleChange("name")}
                   autoComplete="name"
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+              >
+                Username
+              </label>
+              <div className="mt-2">
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={values.username}
+                  onChange={handleChange("username")}
+                  autoComplete="username"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
                 />

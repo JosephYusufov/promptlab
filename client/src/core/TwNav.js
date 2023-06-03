@@ -257,11 +257,11 @@ export default function TwNav() {
             </>
           )}
         </Disclosure>
-        <main>
-          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-            {/* Your content */}
-          </div>
-        </main>
+        {/* <main> */}
+        {/* <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8"> */}
+        {/* Your content */}
+        {/* </div> */}
+        {/* </main> */}
       </div>
     </>
   );

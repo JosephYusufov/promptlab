@@ -18,7 +18,7 @@ const ListView = ({ ...props }) => {
   return (
     <>
       {/* No data, but it is still being loaded */}
-      {!data && !noData && (
+      {data && data.length == 0 && !noData && (
         <div className={"flex justify-center items-center mt-10"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -41,8 +41,8 @@ const ListView = ({ ...props }) => {
         </div>
       )}
       {/* data */}
-      {data && (
-        <ul role="list" className="divide-y divide-gray-600">
+      {data && !data.length == 0 && (
+        <ul role="list" className="divide-y divide-gray-600 ">
           {data.map((item, i) => {
             return (
               <li key={`item-${i}`} className="pl-list-view-item">
