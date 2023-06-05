@@ -118,7 +118,7 @@ export default function SingleIntent({ ...props }) {
           <ListView
             data={intent.prompts}
             noData={noData}
-            contentKeys={["text", "model", "created", "generation"]}
+            contentKeys={["text", "model", "generation", "created"]}
           ></ListView>
         </div>
         <CreatePrompt

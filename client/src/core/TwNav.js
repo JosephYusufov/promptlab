@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import auth from "./../auth/auth-helper";
+import logo from "../assets/images/logo.png";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -77,12 +78,11 @@ export default function TwNav() {
               <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
-                    <Link to={"/"} className="flex-shrink-0">
-                      <img
-                        className="h-8 w-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                        alt="Your Company"
-                      />
+                    <Link to={"/"} className="flex flex-shrink-0">
+                      <img className="h-6 w-6" src={logo} alt="Your Company" />
+                      <h2 className="text-xl text-white font-bold leading-4 ml-2">
+                        PromptLab
+                      </h2>
                     </Link>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
