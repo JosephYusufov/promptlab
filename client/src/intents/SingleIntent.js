@@ -90,10 +90,7 @@ export default function SingleIntent({ ...props }) {
           <span className="font-semibold"> {intent.name} </span>
         </h2>
       </div>
-      <hr
-        // style={{ width: "100vw", marginLeft: "" }}
-        className="text-centerborder-t border-gray-700 mb-4"
-      ></hr>
+      <hr className="text-centerborder-t border-gray-700 mb-4"></hr>
       <div className="flex gap-6 justify-between items-start">
         <div className="w-3/4">
           <div className="flex justify-between items-center  mb-4">
@@ -119,6 +116,13 @@ export default function SingleIntent({ ...props }) {
             data={intent.prompts}
             noData={noData}
             contentKeys={["text", "model", "generation", "created"]}
+            disclosureContent={true}
+            renderDisclosure={(datum) => (
+              <div className="bg-gray-800 animate p-5">
+                <h2 className="text-lg mb-2">Full Text</h2>
+                {datum.text}
+              </div>
+            )}
           ></ListView>
         </div>
         <CreatePrompt

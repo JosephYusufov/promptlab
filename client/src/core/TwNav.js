@@ -79,8 +79,8 @@ export default function TwNav() {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <Link to={"/"} className="flex flex-shrink-0">
-                      <img className="h-6 w-6" src={logo} alt="Your Company" />
-                      <h2 className="text-xl text-white font-bold leading-4 ml-2">
+                      <img className="h-8 w-8" src={logo} alt="Your Company" />
+                      <h2 className="text-xl text-white font-bold ml-2">
                         PromptLab
                       </h2>
                     </Link>
