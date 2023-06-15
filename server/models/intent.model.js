@@ -14,6 +14,10 @@ const IntentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Project",
+  },
   version: {
     type: Number,
     default: 0,
@@ -23,6 +27,12 @@ const IntentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // prompts: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "Prompt",
+  //   },
+  // ],
 });
 
 IntentSchema.virtual("prompts", {

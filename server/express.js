@@ -9,6 +9,7 @@ import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import promptRoutes from "./routes/prompt.routes.js";
 import intentRoutes from "./routes/intent.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -47,6 +48,7 @@ app.use("/", userRoutes);
 app.use("/", authRoutes);
 app.use("/", promptRoutes);
 app.use("/", intentRoutes);
+app.use("/", projectRoutes);
 
 // app.get('*', (req, res) => {
 //   // const sheets = new ServerStyleSheets()

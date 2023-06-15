@@ -42,7 +42,7 @@ const list = async (req, res) => {
   let user = req.profile;
   // console.log(user);
   try {
-    let intents = await Intent.find({ user: user._id }).exec();
+    let intents = await Intent.find({ user: user._id });
     // console.log(intents);
     res.json(intents);
   } catch (err) {
