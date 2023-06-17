@@ -8,7 +8,9 @@ const configuration = new Configuration({
 
 
 export const generateResponse = async (prompt) => {
+
     const openai = new OpenAIApi(configuration)
+
     return await openai.createCompletion({
         model: config.openaiModel,
         prompt: prompt,
