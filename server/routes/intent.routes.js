@@ -13,8 +13,8 @@ router
 // .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.remove)
 
 router
-  .route("/api/intents/user/:userId/intent/:intentId")
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, intentCtrl.read);
+  .route("/api/intent/:intentId")
+  .get(authCtrl.requireSignin, intentCtrl.hasAuthorization, intentCtrl.read);
 
 router
   .route("/api/intents/:intentId/completion")

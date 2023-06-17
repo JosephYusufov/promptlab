@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import auth from "./../auth/auth-helper";
 import { useParams } from "react-router-dom";
-import { read } from "./api-project";
+import { read as readProject } from "./api-project";
+import { read as readIntent } from "./../intents/api-intents";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ListView from "../elements/ListView";
 import CreateIntent from "../intents/CreateIntent";
 import Sidebar from "../elements/Sidebar";
+import SingleIntent from "../intents/SingleIntent";
 import {
   CubeTransparentIcon,
   CalendarIcon,
@@ -16,21 +18,21 @@ import {
 export default function SingleProject({ ...props }) {
   const params = useParams();
   const [project, setProject] = useState({});
-
+  const [intentId, setIntentId] = useState(null);
   const [noData, setNoData] = useState(false);
   const [open, setOpen] = useState(false);
   const jwt = auth.isAuthenticated();
-  console.log(jwt);
+  // console.log(jwt);
   dayjs.extend(relativeTime);
 
   const fetchAndUpdateProject = () => {
-    read(
+    readProject(
       {
         projectId: params.projectId,
       },
       { t: jwt.token }
     ).then((data) => {
-      console.log(data);
+      // console.log(data);
       if (data && data.error) {
         console.log(data.error);
       } else {
@@ -42,6 +44,36 @@ export default function SingleProject({ ...props }) {
         setProject(data);
       }
     });
+  };
+
+  // const fetchAndUpdateIntent = (intentId) => {
+  //   readIntent(
+  //     {
+  //       intentId: intentId,
+  //     },
+  //     { t: jwt.token }
+  //   ).then((data) => {
+  //     console.log(data);
+  //     if (data && data.error) {
+  //       console.log(data.error);
+  //     } else {
+  //       // if (!data.prompts.length) setNoData(true);
+  //       data.prompts.map((prompt, i) => {
+  //         prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
+  //         prompt.version = `Generation ${prompt.version}`;
+  //       });
+  //       setIntent(data);
+  //     }
+  //   });
+  // };
+
+  // const onSelect = (intent) => {
+  //   fetchAndUpdateIntent(intent._id);
+  // };
+
+  const onSelect = (intent) => {
+    console.log(intent);
+    setIntentId(intent._id);
   };
 
   useEffect(fetchAndUpdateProject, [params]);
@@ -85,19 +117,12 @@ export default function SingleProject({ ...props }) {
             </button>
           </div>
 
-          <ListView
+          <Sidebar
             data={project.intents}
             noData={noData}
-            contentKeys={["name", "model", "generation", "created"]}
-            sidebar={true}
-            disclosureContent={true}
-            renderDisclosure={(datum) => (
-              <div className="bg-gray-800 animate p-5">
-                <h2 className="text-lg mb-2">Full Text</h2>
-                {datum.text}
-              </div>
-            )}
-          ></ListView>
+            contentKeys={["name", "model", "version", "created"]}
+            onSelect={onSelect}
+          ></Sidebar>
         </div>
         <CreateIntent
           className="mb-10"
@@ -109,21 +134,7 @@ export default function SingleProject({ ...props }) {
           setOpen={setOpen}
         />
         <div className="intent w-3/4">
-          <h2 className="text-lg text-white mb-4">About</h2>
-          <div className="flex justify-start items-center gap-2">
-            <CubeTransparentIcon className="text-gray-400 h-5 w-5"></CubeTransparentIcon>
-            <p className="text-base text-gray-400">{project.model}</p>
-          </div>
-          <div className="flex justify-start items-center gap-2">
-            <CalendarIcon className="text-gray-400 h-5 w-5"></CalendarIcon>
-            <p className="text-base text-gray-400">{`Created ${dayjs(
-              project.created
-            ).fromNow(true)} ago`}</p>
-          </div>
-          <div className="flex justify-start items-center gap-2">
-            <ArrowPathIcon className="text-gray-400 h-5 w-5"></ArrowPathIcon>
-            <p className="text-base text-gray-400">Version {project.version}</p>
-          </div>
+          <SingleIntent intentId={intentId}></SingleIntent>
         </div>
       </div>
     </>

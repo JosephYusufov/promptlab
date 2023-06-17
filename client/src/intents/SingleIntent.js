@@ -21,58 +21,36 @@ export default function SingleIntent({ ...props }) {
   console.log(jwt);
   dayjs.extend(relativeTime);
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    // console.log(params);
-    read(
-      {
-        userId: params.userId,
-        intentId: params.intentId,
-      },
-      { t: jwt.token },
-      signal
-    ).then((data) => {
-      console.log(data);
-      if (data && data.error) {
-        console.log(data.error);
-      } else {
-        if (!data.prompts.length) setNoData(true);
-        data.prompts.map((prompt, i) => {
-          prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
-          prompt.generation = `Generation ${prompt.generation}`;
-        });
-        setIntent(data);
-      }
-    });
-    return function cleanup() {
-      abortController.abort();
-    };
-  }, [params]);
-
-  const onPromptCreated = () => {
-    read(
-      {
-        userId: params.userId,
-        intentId: params.intentId,
-      },
-      { t: jwt.token },
-      undefined
-    ).then((data) => {
-      console.log(data);
-      if (data && data.error) {
-        console.log(data.error);
-      } else {
-        if (!data.prompts.length) setNoData(true);
-        data.prompts.map((prompt, i) => {
-          prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
-          prompt.generation = `Generation ${prompt.generation}`;
-        });
-        setIntent(data);
-        setNoData(false);
-      }
-    });
+  const fetchIntent = () => {
+    console.log("fetchIntent");
+    console.log(props);
+    if (props.intentId)
+      read(
+        {
+          intentId: props.intentId,
+        },
+        { t: jwt.token }
+      ).then((data) => {
+        console.log(data);
+        if (data && data.error) {
+          console.log(data.error);
+        } else {
+          if (!data.prompts.length) setNoData(true);
+          data.prompts.map((prompt, i) => {
+            prompt.created = `Created ${dayjs(prompt.created).fromNow(
+              true
+            )} ago`;
+            prompt.generation = `Generation ${prompt.generation}`;
+          });
+          setIntent(data);
+          setNoData(false);
+        }
+      });
   };
+  useEffect(fetchIntent, [props.intentId]);
+
+  // const onPromptCreated = () => {
+  // };
 
   return (
     <>
@@ -130,7 +108,7 @@ export default function SingleIntent({ ...props }) {
           params={params}
           intent={intent}
           credentials={{ t: jwt.token }}
-          cb={onPromptCreated}
+          cb={fetchIntent}
           open={open}
           setOpen={setOpen}
         />

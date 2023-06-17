@@ -11,3 +11,7 @@ html {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+.pl-list-view-item.active {
+  @apply bg-gray-700;
+}
