@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ListView from "../elements/ListView";
 import CreateIntent from "../intents/CreateIntent";
+import Sidebar from "../elements/Sidebar";
 import {
   CubeTransparentIcon,
   CalendarIcon,
@@ -15,6 +16,7 @@ import {
 export default function SingleProject({ ...props }) {
   const params = useParams();
   const [project, setProject] = useState({});
+
   const [noData, setNoData] = useState(false);
   const [open, setOpen] = useState(false);
   const jwt = auth.isAuthenticated();
@@ -43,30 +45,6 @@ export default function SingleProject({ ...props }) {
   };
 
   useEffect(fetchAndUpdateProject, [params]);
-
-  // const onPromptCreated = () => {
-  //   read(
-  //     {
-  //       userId: params.userId,
-  //       intentId: params.intentId,
-  //     },
-  //     { t: jwt.token },
-  //     undefined
-  //   ).then((data) => {
-  //     console.log(data);
-  //     if (data && data.error) {
-  //       console.log(data.error);
-  //     } else {
-  //       if (!data.prompts.length) setNoData(true);
-  //       data.prompts.map((prompt, i) => {
-  //         prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
-  //         prompt.generation = `Generation ${prompt.generation}`;
-  //       });
-  //       setIntent(data);
-  //       setNoData(false);
-  //     }
-  //   });
-  // };
 
   return (
     <>
@@ -106,10 +84,12 @@ export default function SingleProject({ ...props }) {
               New
             </button>
           </div>
+
           <ListView
             data={project.intents}
             noData={noData}
             contentKeys={["name", "model", "generation", "created"]}
+            sidebar={true}
             disclosureContent={true}
             renderDisclosure={(datum) => (
               <div className="bg-gray-800 animate p-5">
