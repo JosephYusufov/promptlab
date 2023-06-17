@@ -1,5 +1,5 @@
 import {Configuration, OpenAIApi} from "openai";
-import {config} from 'config.js';
+import config from '../../config.js'
 
 const configuration = new Configuration({
     organization: 'org-jTR9YCQ7JXiBkTx0gV5pVL13',
@@ -7,7 +7,7 @@ const configuration = new Configuration({
 })
 
 
-const generateResponse = async (prompt) => {
+export const generateResponse = async (prompt) => {
     const openai = new OpenAIApi(configuration)
     return await openai.createCompletion({
         model: config.openaiModel,
@@ -16,7 +16,7 @@ const generateResponse = async (prompt) => {
     })
 }
 
-const generatePrompt = async (prompt, airesponse, useresponse) => {
+export const generatePrompt = async (prompt, airesponse, useresponse) => {
 
     const feedbackPrompt = 'The following prompt was fed to ' + config.openaiModel + ':' +
         prompt + ' This is the response the model generated: \n' + airesponse + ' However, the response' +
@@ -36,3 +36,4 @@ const generatePrompt = async (prompt, airesponse, useresponse) => {
     return String.split(response, '\n')[0].replace('Enhanced Prompt: ', '')
 
 }
+
