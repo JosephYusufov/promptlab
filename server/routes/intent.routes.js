@@ -16,6 +16,14 @@ router
   .route("/api/intents/user/:userId/intent/:intentId")
   .get(authCtrl.requireSignin, authCtrl.hasAuthorization, intentCtrl.read);
 
+router
+  .route("/api/intents/:intentId/completion")
+  .get(
+    authCtrl.requireSignin,
+    intentCtrl.hasAuthorization,
+    intentCtrl.getCompletion
+  );
+
 router.param("userId", userCtrl.userByID);
 router.param("intentId", intentCtrl.intentById);
 

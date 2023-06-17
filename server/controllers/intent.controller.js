@@ -52,6 +52,18 @@ const list = async (req, res) => {
   }
 };
 
+const hasAuthorization = async (req, res, next) => {
+  const authorized = req.intent && req.auth && req.auth._id == req.intent.user;
+  // TODO: Authorize users who are members or admins as well.
+  //   || req.auth._id
+  if (!authorized) {
+    return res.status(403).json({
+      error: "User is not authorized",
+    });
+  }
+  next();
+};
+
 // const update = async (req, res) => {
 //   try {
 //     let user = req.profile
@@ -82,6 +94,11 @@ const list = async (req, res) => {
 //   }
 // }
 
+const getCompletion = async (req, res) => {
+  const intent = req.intent;
+  res.json(intent);
+  // getResponse(...)
+};
 export default {
   create,
   read,
@@ -89,4 +106,6 @@ export default {
   // remove,
   // update,
   intentById,
+  getCompletion,
+  hasAuthorization,
 };
