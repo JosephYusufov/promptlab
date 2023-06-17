@@ -12,6 +12,8 @@ import PrivateRoute from "./auth/PrivateRoute";
 import TwNav from "./core/TwNav";
 import Intents from "./intents/Intents";
 import SingleIntent from "./intents/SingleIntent";
+import Projects from "./projects/Projects";
+import SingleProject from "./projects/SingleProject";
 
 const MainRouter = () => {
   return (
@@ -19,7 +21,7 @@ const MainRouter = () => {
       {/* <Menu /> */}
       <TwNav />
       <main>
-        <div className="mx-auto max-w-5xl pt-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl pt-6 sm:px-6 lg:px-8">
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route path="/users" element={<Users />} />
@@ -70,6 +72,22 @@ const MainRouter = () => {
               element={
                 <PrivateRoute>
                   <SingleIntent />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/project/user/:userId"
+              element={
+                <PrivateRoute>
+                  <Projects />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/project/:projectId"
+              element={
+                <PrivateRoute>
+                  <SingleProject />
                 </PrivateRoute>
               }
             />

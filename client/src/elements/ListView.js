@@ -68,8 +68,8 @@ const ListView = ({ ...props }) => {
           {data
             .map((item, i) => {
               return (
-                <Disclosure>
-                  <li key={`item-${i}`} className="">
+                <Disclosure key={`item-${i}`}>
+                  <li className="">
                     <ConditionalWrapper
                       condition={disclosureContent}
                       ifTrue={(children) => (

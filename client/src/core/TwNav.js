@@ -41,8 +41,9 @@ export default function TwNav() {
   useEffect(() => {
     if (user) {
       setMenuItems([
-        { name: "Prompts", href: "/prompts/" + user._id },
+        // { name: "Prompts", href: "/prompts/" + user._id },
         { name: "Intents", href: "/intents/" + user._id },
+        { name: "Projects", href: "/project/user/" + user._id },
       ]);
       setUserMenuItems([
         { name: "Your Profile", href: "#" },
@@ -75,7 +76,7 @@ export default function TwNav() {
         >
           {({ open }) => (
             <>
-              <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <Link to={"/"} className="flex flex-shrink-0">
