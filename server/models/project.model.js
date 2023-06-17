@@ -21,12 +21,6 @@ const ProjectSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  // intents: [
-  //   {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: "User",
-  //   },
-  // ],
   updated: Date,
   created: {
     type: Date,
@@ -39,16 +33,6 @@ ProjectSchema.virtual("intents", {
   localField: "_id",
   foreignField: "project",
 });
-// ProjectSchema.virtual("members", {
-//   ref: "User",
-//   // localField: "_id",
-//   // foreignField: "intent",
-// });
-// IntentSchema.virtual("admins", {
-//   ref: "Prompt",
-//   localField: "_id",
-//   foreignField: "intent",
-// });
 
 ProjectSchema.set("toObject", { virtuals: true });
 ProjectSchema.set("toJSON", { virtuals: true });
