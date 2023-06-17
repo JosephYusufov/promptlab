@@ -18,7 +18,7 @@ router
 
 router
   .route("/api/intents/:intentId/completion")
-  .get(
+  .post(
     authCtrl.requireSignin,
     intentCtrl.hasAuthorization,
     intentCtrl.getCompletion
