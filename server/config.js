@@ -14,6 +14,8 @@ const config = {
       ":" +
       (process.env.MONGO_PORT || "27017") +
       "/mernproject",
+  openaiKey: process.env.OPENAI_KEY || null,
+  openaiModel: process.env.OPENAI_MODEL || null,
 };
 
 export default config;
