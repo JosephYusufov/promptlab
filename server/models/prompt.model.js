@@ -28,6 +28,7 @@ const PromptSchema = new mongoose.Schema({
   intent: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Intent",
+    required: "An intent is required",
   },
 });
 
