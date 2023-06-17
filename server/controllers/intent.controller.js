@@ -106,42 +106,46 @@ const getCompletion = async (req, res) => {
 
     const context = req.body.context;
     const intent = req.intent;
-    const promptText = intent.prompts.slice(-1);
+    const promptText = intent.prompts.slice(-1)[0].text;
+
 
     const exp = /{{.+?}}/mg
 
     const matches = promptText.match(exp);
 
-    let editedPrompt = promptText.copy()
+    let editedPrompt = promptText;
 
-    for (let i = 0; i < context.length; i++) {
+    const len = Object.keys(context).length
 
-      let cont_braces;
-      let cur_match;
-      try {
-        cont_braces = '{{' + context.keys()[i] + '}}'
-        cur_match = matches[i]
-      } catch (e) {
+    if (len !== matches.length) {
         return res.status(400).json({
-          error: 'Mismatch between context length and variable length in prompt.'
+            error: 'Mismatch between context length and variable length in prompt.'
         })
-      }
-
-      if (cont_braces !== cur_match) {
-        return res.status(400).json({
-          error: 'Variable in context does not match variable in prompt!'
-        })
-      } else {
-        editedPrompt = editedPrompt.replace(editedPrompt.match(cur_match), context[context.keys()[i]])
-      }
     }
 
-  res.json(editedPrompt);
+    if (len !== 0) {
 
-    //res.json(generatePrompt(promptText));
+        for (let i = 0; i < len; i++) {
+
+            const cont_braces = '{{' + Object.keys(context)[i] + '}}'
+            const cur_match = matches[i]
+
+            if (cont_braces !== cur_match)
+            {
+                return res.status(400).json({
+                    error: 'Variable in context does not match variable in prompt!'
+                })
+            } else {
+                editedPrompt = editedPrompt.replace(editedPrompt.match(cur_match), context[Object.keys(context)[i]])
+            }
+        }
+    }
+
+    const resp =  generateResponse(editedPrompt)
 
 
-    // getResponse(...)
+    await res.json(resp);
+
 };
 export default {
     create,
