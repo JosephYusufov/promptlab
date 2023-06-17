@@ -24,7 +24,7 @@ export const generateResponse = async (prompt) => {
 export const generatePrompt = async (prompt, airesponse, useresponse, iterations=0, feedbackVar=null) => {
 
     if (iterations >= 5) {
-        return feedbackVar
+        return "Max Iterations (5) reached"
     }
 
     const feedbackPrompt = 'I gave this prompt to chatgpt-3.5: ' + prompt + '. After I fed this prompt to the' +
