@@ -1,6 +1,7 @@
 import Intent from "../models/intent.model.js";
 import errorHandler from "../helpers/dbErrorHandler.js";
 import { generateResponse, generatePrompt } from "../vendors/openAI/index.js";
+import projectCtrl from "./project.controller.js";
 
 const intentById = async (req, res, next, id) => {
   try {
@@ -20,7 +21,7 @@ const intentById = async (req, res, next, id) => {
 };
 
 const create = async (req, res) => {
-  let user = req.profile;
+  let user = req.auth;
   let intent = new Intent({ ...req.body, user: user._id });
   try {
     await intent.save();
@@ -40,7 +41,7 @@ const read = (req, res) => {
 };
 
 const list = async (req, res) => {
-  let user = req.profile;
+  let user = req.auth;
   // console.log(user);
   try {
     let intents = await Intent.find({ user: user._id });
@@ -54,15 +55,30 @@ const list = async (req, res) => {
 };
 
 const hasAuthorization = async (req, res, next) => {
-  const authorized = req.intent && req.auth && req.auth._id == req.intent.user;
-  // TODO: Authorize users who are members or admins as well.
-  //   || req.auth._id
-  if (!authorized) {
-    return res.status(403).json({
-      error: "User is not authorized",
-    });
+  if (!req.intent) {
+    if (!req.body)
+      return res.status(400).json({ error: "Provide a request body." });
+    if (!req.body.project)
+      return res
+        .status(400)
+        .json({ error: "Provide a project ID in the request body." });
+    console.log(req.body.project);
+    await projectCtrl.projectById(req, res, null, req.body.project);
+  } else {
+    console.log(req.intent);
+    await projectCtrl.projectById(req, res, null, req.intent.project);
   }
-  next();
+
+  await projectCtrl.hasAuthorization(req, res, next);
+  // const authorized = req.intent && req.auth && req.auth._id == req.intent.user;
+  // // TODO: Authorize users who are members or admins as well.
+  // //   || req.auth._id
+  // if (!authorized) {
+  //   return res.status(403).json({
+  //     error: "User is not authorized",
+  //   });
+  // }
+  // next();
 };
 
 // const update = async (req, res) => {
@@ -94,6 +110,25 @@ const hasAuthorization = async (req, res, next) => {
 //     })
 //   }
 // }
+const createPrompt = async (req, res) => {
+  let user = req.auth;
+  let intent = req.intent;
+  let prompt = new Prompt({
+    ...req.body,
+    user: user._id,
+    intent: intent._id,
+  });
+  try {
+    await prompt.save();
+    return res.status(200).json({
+      message: "Succesfully created a new Prompt.",
+    });
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
+};
 
 const getCompletion = async (req, res) => {
   if (!req.body.context) {
@@ -151,4 +186,5 @@ export default {
   intentById,
   getCompletion,
   hasAuthorization,
+  createPrompt,
 };

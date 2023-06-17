@@ -100,7 +100,6 @@ const Sidebar = ({ ...props }) => {
                   <ChevronRightIcon className="w-5 h-5 mr-2 text-white"></ChevronRightIcon>
                 </Link>
               </li>
-              // </Disclosure>
             );
           })}
         </ul>
