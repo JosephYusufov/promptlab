@@ -199,13 +199,7 @@ const getPrompt = async (req, res) => {
     const resp = await generatePrompt(editedPrompt, airesponse, uresponse)
 
 
-    if (typeof (resp) === "string") {
-        res.json(resp)
-    } else {
-        res.json(resp.data.choices.message[0].content)
-    }
-
-    //res.json(resp);
+    res.json(resp);
 
 }
 export default {
