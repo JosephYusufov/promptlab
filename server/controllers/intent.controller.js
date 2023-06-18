@@ -1,4 +1,5 @@
 import Intent from "../models/intent.model.js";
+import Prompt from "../models/prompt.model.js";
 import errorHandler from "../helpers/dbErrorHandler.js";
 import { generateResponse, generatePrompt } from "../vendors/openAI/index.js";
 import projectCtrl from "./project.controller.js";
@@ -117,6 +118,7 @@ const createPrompt = async (req, res) => {
     ...req.body,
     user: user._id,
     intent: intent._id,
+    model: intent.model,
   });
   try {
     await prompt.save();
@@ -139,6 +141,7 @@ const getCompletion = async (req, res) => {
 
   const context = req.body.context;
   const intent = req.intent;
+  console.log(intent);
   const promptText = intent.prompts.slice(-1)[0].text;
 
   const exp = /{{.+?}}/gm;

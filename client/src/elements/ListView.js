@@ -35,6 +35,7 @@ const ListView = ({ ...props }) => {
     setLinkKey(props.linkKey);
     setNoData(props.noData);
     setDisclosureContent(props.disclosureContent);
+    console.log(noData);
   }, [props]);
 
   return (

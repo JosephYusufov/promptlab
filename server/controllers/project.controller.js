@@ -53,25 +53,25 @@ const read = (req, res) => {
   return res.json(req.project);
 };
 
-const createIntent = async (req, res, next) => {
-  let user = req.auth;
-  let project = req.project;
-  let intent = new Intent({
-    ...req.body,
-    user: user._id,
-    project: project._id,
-  });
-  try {
-    await intent.save();
-    return res.status(200).json({
-      message: "Succesfully created a new Intent.",
-    });
-  } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err),
-    });
-  }
-};
+// const createIntent = async (req, res, next) => {
+//   let user = req.auth;
+//   let project = req.project;
+//   let intent = new Intent({
+//     ...req.body,
+//     user: user._id,
+//     project: project._id,
+//   });
+//   try {
+//     await intent.save();
+//     return res.status(200).json({
+//       message: "Succesfully created a new Intent.",
+//     });
+//   } catch (err) {
+//     return res.status(400).json({
+//       error: errorHandler.getErrorMessage(err),
+//     });
+//   }
+// };
 
 const update = async (req, res) => {
   try {
@@ -154,7 +154,7 @@ export default {
   create,
   read,
   list,
-  createIntent,
+  // createIntent,
   hasAuthorization,
   // remove,
   update,

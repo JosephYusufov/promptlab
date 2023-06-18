@@ -22,7 +22,7 @@ router
   );
 
 router
-  .route("/api/intents/:intentId/completion")
+  .route("/api/intent/:intentId/completion")
   .post(
     authCtrl.requireSignin,
     intentCtrl.hasAuthorization,
