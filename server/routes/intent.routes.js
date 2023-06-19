@@ -30,12 +30,12 @@ router
   );
 
 router
-    .route("/api/intents/:intentId/generate")
-    .post(
-        authCtrl.requireSignin,
-        intentCtrl.hasAuthorization,
-        intentCtrl.getPrompt,
-    );
+  .route("/api/intent/:intentId/generate")
+  .post(
+    authCtrl.requireSignin,
+    intentCtrl.hasAuthorization,
+    intentCtrl.getPrompt
+  );
 
 router.param("userId", userCtrl.userByID);
 router.param("intentId", intentCtrl.intentById);
