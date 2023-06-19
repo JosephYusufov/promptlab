@@ -6,18 +6,23 @@ import intentCtrl from "../controllers/intent.controller.js";
 const router = express.Router();
 
 router
-  .route("/api/intents/user/:userId")
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, intentCtrl.list)
-  .post(authCtrl.requireSignin, authCtrl.hasAuthorization, intentCtrl.create);
+  .route("/api/intent")
+  .get(authCtrl.requireSignin, intentCtrl.list)
+  .post(authCtrl.requireSignin, intentCtrl.hasAuthorization, intentCtrl.create);
 // .put(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.update)
 // .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, promptCtrl.remove)
 
 router
-  .route("/api/intents/user/:userId/intent/:intentId")
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, intentCtrl.read);
+  .route("/api/intent/:intentId")
+  .get(authCtrl.requireSignin, intentCtrl.hasAuthorization, intentCtrl.read)
+  .post(
+    authCtrl.requireSignin,
+    intentCtrl.hasAuthorization,
+    intentCtrl.createPrompt
+  );
 
 router
-  .route("/api/intents/:intentId/completion")
+  .route("/api/intent/:intentId/completion")
   .post(
     authCtrl.requireSignin,
     intentCtrl.hasAuthorization,
@@ -25,12 +30,12 @@ router
   );
 
 router
-    .route("/api/intents/:intentId/generate")
-    .post(
-        authCtrl.requireSignin,
-        intentCtrl.hasAuthorization,
-        intentCtrl.getPrompt,
-    );
+  .route("/api/intent/:intentId/generate")
+  .post(
+    authCtrl.requireSignin,
+    intentCtrl.hasAuthorization,
+    intentCtrl.getPrompt
+  );
 
 router.param("userId", userCtrl.userByID);
 router.param("intentId", intentCtrl.intentById);

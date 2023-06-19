@@ -48,7 +48,7 @@ export default function Signin(props) {
   //   return <Navigate to={"/"} />;
   // }
 
-  if (jwt) return <Navigate to={`/intents/${jwt.user._id}`} />;
+  if (jwt) return <Navigate to={`/projects/user/${jwt.user._id}`} />;
 
   return (
     <>

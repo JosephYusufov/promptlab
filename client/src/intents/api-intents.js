@@ -8,18 +8,15 @@ const backendUri =
 const create = async (intent, params, credentials, signal) => {
   // console.log(credentials);
   try {
-    let response = await fetch(
-      backendUri + "/api/intents/user/" + params.userId,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + credentials.t,
-        },
-        body: JSON.stringify(intent),
-      }
-    );
+    let response = await fetch(backendUri + "/api/intent", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      body: JSON.stringify(intent),
+    });
     return await response.json();
   } catch (err) {
     console.log(err);
@@ -46,22 +43,15 @@ const list = async (params, credentials, signal) => {
 
 const read = async (params, credentials, signal) => {
   try {
-    let response = await fetch(
-      backendUri +
-        "/api/intents/user/" +
-        params.userId +
-        "/intent/" +
-        params.intentId,
-      {
-        method: "GET",
-        signal: signal,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + credentials.t,
-        },
-      }
-    );
+    let response = await fetch(backendUri + "/api/intent/" + params.intentId, {
+      method: "GET",
+      signal: signal,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+    });
     return await response.json();
   } catch (err) {
     console.log(err);

@@ -17,6 +17,7 @@ const IntentSchema = new mongoose.Schema({
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
+    required: "A project is required.",
   },
   version: {
     type: Number,

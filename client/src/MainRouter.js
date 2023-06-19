@@ -21,7 +21,7 @@ const MainRouter = () => {
       {/* <Menu /> */}
       <TwNav />
       <main>
-        <div className="mx-auto max-w-7xl pt-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 mt-16 pt-5">
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route path="/users" element={<Users />} />

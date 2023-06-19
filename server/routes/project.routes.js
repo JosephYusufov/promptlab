@@ -12,12 +12,16 @@ router
 router
   .route("/api/project/:projectId")
   .get(authCtrl.requireSignin, projectCtrl.hasAuthorization, projectCtrl.read)
-  .put(authCtrl.requireSignin, projectCtrl.hasAuthorization, projectCtrl.update)
-  .post(
+  .put(
     authCtrl.requireSignin,
     projectCtrl.hasAuthorization,
-    projectCtrl.createIntent
+    projectCtrl.update
   );
+// .post(
+//   authCtrl.requireSignin,
+//   projectCtrl.hasAuthorization,
+//   projectCtrl.createIntent
+// );
 // .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, projectCtrl.delete)
 
 router.route("/api/project").post(authCtrl.requireSignin, projectCtrl.create);

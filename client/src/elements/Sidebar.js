@@ -5,24 +5,25 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 const Sidebar = ({ ...props }) => {
   let [data, setData] = useState(props.data);
   let [contentKeys, setContentKeys] = useState(props.contentKeys);
-  let [linkKey, setLinkKey] = useState(props.linkKey);
   let [noData, setNoData] = useState(props.noData);
   let [selected, setSelected] = useState(null);
 
-  //   let [disclosureContent, setDisclosureContent] = useState(
-  //     props.disclosureContent
-  //   );
   useEffect(() => {
     setData(props.data);
     setContentKeys(props.contentKeys);
-    setLinkKey(props.linkKey);
     setNoData(props.noData);
-    // setDisclosureContent(props.disclosureContent);
   }, [props]);
 
   useEffect(() => {
-    if (props.onSelect) props.onSelect(selected);
+    if (props.onSelect != undefined && selected) {
+      console.log(selected);
+      props.onSelect(selected);
+    }
   }, [selected]);
+
+  const handleClick = (datum) => {
+    setSelected(datum);
+  };
 
   return (
     <div className={props.className}>
@@ -51,14 +52,18 @@ const Sidebar = ({ ...props }) => {
       )}
       {/* data */}
       {data && !data.length == 0 && (
-        <ul role="list" className="divide-y divide-gray-600 ">
+        <ul
+          role="list"
+          className="rounded-md border border-gray-700 divide-y divide-gray-600 overflow-auto"
+        >
           {data.map((item, i) => {
             return (
-              // <Disclosure key={`item-${i}`}>
-              <li className="">
+              <li key={`item-${i}`}>
                 <Link
-                  to={linkKey ? item[linkKey] : "#"}
-                  className="pl-list-view-item flex justify-between items-center gap-x-6 py-3 rounded-sm bg-inherit shadow-sm hover:decoration-solid focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={() => handleClick(item)}
+                  className={`${
+                    selected && selected._id == item._id ? "active" : ""
+                  } pl-list-view-item flex justify-between items-center gap-x-6 py-2 px-3 bg-inherit shadow-sm hover:decoration-solid focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
                 >
                   <div className="flex gap-x-4 w-5/6">
                     <div className="w-full min-w-0 flex-auto">
@@ -87,19 +92,17 @@ const Sidebar = ({ ...props }) => {
                         <div className="text-xs leading-5 text-gray-500 dark:text-gray-300 mr-4">
                           {item[contentKeys[2]]}
                         </div>
-                        {contentKeys.length > 3 && (
-                          <div className="text-xs leading-5 text-gray-500 dark:text-gray-300">
-                            {item[contentKeys[3]]}
-                          </div>
-                        )}
                       </div>
+                      {contentKeys.length > 3 && (
+                        <div className="text-xs leading-5 text-gray-500 dark:text-gray-300">
+                          {item[contentKeys[3]]}
+                        </div>
+                      )}
                     </div>
                   </div>
+                  <ChevronRightIcon className="w-5 h-5 mr-2 text-white"></ChevronRightIcon>
                 </Link>
-
-                <ChevronRightIcon className="w-5 h-5 mr-2 text-white"></ChevronRightIcon>
               </li>
-              // </Disclosure>
             );
           })}
         </ul>

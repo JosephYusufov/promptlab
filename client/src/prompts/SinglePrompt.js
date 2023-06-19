@@ -17,40 +17,40 @@ export default function SinglePrompt() {
     const abortController = new AbortController();
     const signal = abortController.signal;
     // console.log(params);
-    list(
-      {
-        userId: params.userId,
-      },
-      { t: jwt.token },
-      signal
-    ).then((data) => {
-      // console.log(data);
-      if (data && data.error) {
-        console.log(data.error);
-      } else {
-        setPrompts(data);
-      }
-    });
+    // list(
+    //   {
+    //     userId: params.userId,
+    //   },
+    //   { t: jwt.token },
+    //   signal
+    // ).then((data) => {
+    //   // console.log(data);
+    //   if (data && data.error) {
+    //     console.log(data.error);
+    //   } else {
+    //     setPrompts(data);
+    //   }
+    // });
     return function cleanup() {
       abortController.abort();
     };
   }, [params.userId]);
 
   const onPromptCreated = () => {
-    list(
-      {
-        userId: params.userId,
-      },
-      { t: jwt.token },
-      undefined
-    ).then((data) => {
-      // console.log(data);
-      if (data && data.error) {
-        console.log(data.error);
-      } else {
-        setPrompts(data);
-      }
-    });
+    // list(
+    //   {
+    //     userId: params.userId,
+    //   },
+    //   { t: jwt.token },
+    //   undefined
+    // ).then((data) => {
+    //   // console.log(data);
+    //   if (data && data.error) {
+    //     console.log(data.error);
+    //   } else {
+    //     setPrompts(data);
+    //   }
+    // });
   };
   return (
     <>

@@ -17,7 +17,12 @@ export default function CreateIntent({ ...props }) {
       model: values.model || undefined,
     };
 
-    create(intent, props.params, props.credentials, undefined).then((data) => {
+    create(
+      { ...intent, project: props.project._id },
+      props.params,
+      props.credentials,
+      undefined
+    ).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
