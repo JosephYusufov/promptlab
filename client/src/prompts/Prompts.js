@@ -19,51 +19,51 @@ export default function Prompts() {
     const abortController = new AbortController();
     const signal = abortController.signal;
     // console.log(params);
-    list(
-      {
-        userId: params.userId,
-      },
-      { t: jwt.token },
-      signal
-    ).then((data) => {
-      // console.log(data);
-      if (data && data.error) {
-        console.log(data.error);
-      } else {
-        if (!data.length) setNoPrompts(true);
-        data.map((prompt, i) => {
-          prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
-          prompt.linkPath = `/prompt/${params.userId}/prompt/${prompt._id}`;
-        });
-        setPrompts(data);
-      }
-    });
+    // list(
+    //   {
+    //     userId: params.userId,
+    //   },
+    //   { t: jwt.token },
+    //   signal
+    // ).then((data) => {
+    //   // console.log(data);
+    //   if (data && data.error) {
+    //     console.log(data.error);
+    //   } else {
+    //     if (!data.length) setNoPrompts(true);
+    //     data.map((prompt, i) => {
+    //       prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
+    //       prompt.linkPath = `/prompt/${params.userId}/prompt/${prompt._id}`;
+    //     });
+    //     setPrompts(data);
+    //   }
+    // });
     return function cleanup() {
       abortController.abort();
     };
   }, [params.userId]);
 
   const onPromptCreated = () => {
-    list(
-      {
-        userId: params.userId,
-      },
-      { t: jwt.token },
-      undefined
-    ).then((data) => {
-      // console.log(data);
-      if (data && data.error) {
-        console.log(data.error);
-      } else {
-        if (!data.length) setNoPrompts(true);
-        else setNoPrompts(false);
-        data.map((prompt, i) => {
-          prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
-          prompt.linkPath = `/prompt/${params.userId}/prompt/${prompt._id}`;
-        });
-        setPrompts(data);
-      }
-    });
+    // list(
+    //   {
+    //     userId: params.userId,
+    //   },
+    //   { t: jwt.token },
+    //   undefined
+    // ).then((data) => {
+    //   // console.log(data);
+    //   if (data && data.error) {
+    //     console.log(data.error);
+    //   } else {
+    //     if (!data.length) setNoPrompts(true);
+    //     else setNoPrompts(false);
+    //     data.map((prompt, i) => {
+    //       prompt.created = `Created ${dayjs(prompt.created).fromNow(true)} ago`;
+    //       prompt.linkPath = `/prompt/${params.userId}/prompt/${prompt._id}`;
+    //     });
+    //     setPrompts(data);
+    //   }
+    // });
   };
   return (
     <>

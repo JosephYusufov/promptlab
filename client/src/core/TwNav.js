@@ -72,7 +72,7 @@ export default function TwNav() {
       <div className="min-h-full">
         <Disclosure
           as="nav"
-          className="bg-gray-950 z-20 relative border-b border-gray-700"
+          className="bg-gray-950 z-20 border-b border-gray-700 fixed top-0 right-0 left-0"
         >
           {({ open }) => (
             <>

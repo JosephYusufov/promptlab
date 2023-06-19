@@ -52,7 +52,10 @@ const Sidebar = ({ ...props }) => {
       )}
       {/* data */}
       {data && !data.length == 0 && (
-        <ul role="list" className="divide-y divide-gray-600 ">
+        <ul
+          role="list"
+          className="rounded-md border border-gray-700 divide-y divide-gray-600 overflow-auto"
+        >
           {data.map((item, i) => {
             return (
               <li key={`item-${i}`}>
@@ -60,7 +63,7 @@ const Sidebar = ({ ...props }) => {
                   onClick={() => handleClick(item)}
                   className={`${
                     selected && selected._id == item._id ? "active" : ""
-                  } pl-list-view-item flex justify-between items-center gap-x-6 py-2 px-3 rounded-sm bg-inherit shadow-sm hover:decoration-solid focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                  } pl-list-view-item flex justify-between items-center gap-x-6 py-2 px-3 bg-inherit shadow-sm hover:decoration-solid focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
                 >
                   <div className="flex gap-x-4 w-5/6">
                     <div className="w-full min-w-0 flex-auto">

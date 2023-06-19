@@ -17,12 +17,17 @@ export default function CreatePrompt({ ...props }) {
   const clickSubmit = () => {
     const prompt = {
       text: values.text || undefined,
-      model: values.model || undefined,
-      model: props.intent.model || undefined,
-      intent: props.params.intentId || undefined,
+      // model: props.intent.model || undefined,
+      // intent: props.params.intentId || undefined,
     };
 
-    create(prompt, props.params, props.credentials, undefined).then((data) => {
+    create(
+      { ...prompt, intent: props.intent._id, model: props.intent.model },
+      props.intent._id,
+      props.params,
+      props.credentials,
+      undefined
+    ).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
