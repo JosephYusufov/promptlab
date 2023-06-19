@@ -163,6 +163,9 @@ const getCompletion = async (req, res) => {
       const cont_braces = "{{" + Object.keys(context)[i] + "}}";
       const cur_match = matches[i];
 
+      const cont_braces = "{{" + Object.keys(context)[i] + "}}";
+      const cur_match = matches[i];
+
       if (cont_braces !== cur_match) {
         return res.status(400).json({
           error: "Variable in context does not match variable in prompt!",
@@ -176,9 +179,123 @@ const getCompletion = async (req, res) => {
     }
   }
 
-  const resp = generateResponse(editedPrompt);
+  const resp = await generateResponse(editedPrompt);
 
-  await res.json(resp);
+  res.json(resp.data);
+};
+
+const getPrompt = async (req, res) => {
+  if (
+    !req.intent ||
+    !req.body.context ||
+    !req.body.uresponse ||
+    !req.body.airesponse
+  ) {
+    res.status(400).json({
+      error:
+        "Key variable missing! Must include prompt, context, userresponse (uresponse), and airesponse  in body",
+    });
+  }
+
+  const intent = req.intent;
+  const promptText = intent.prompts.slice(-1)[0].text;
+
+  const context = req.body.context;
+  const uresponse = req.body.uresponse;
+  const airesponse = req.body.airesponse;
+
+  const exp = /{{.+?}}/gm;
+
+  const matches = promptText.match(exp);
+
+  let editedPrompt = promptText;
+
+  const len = Object.keys(context).length;
+
+  if (len !== matches.length) {
+    return res.status(400).json({
+      error: "Mismatch between context length and variable length in prompt.",
+    });
+  }
+
+  if (len !== 0) {
+    for (let i = 0; i < len; i++) {
+      const cont_braces = "{{" + Object.keys(context)[i] + "}}";
+      const cur_match = matches[i];
+
+      if (cont_braces !== cur_match) {
+        return res.status(400).json({
+          error: "Variable in context does not match variable in prompt!",
+        });
+      } else {
+        editedPrompt = editedPrompt.replace(
+          editedPrompt.match(cur_match),
+          "{{" + context[Object.keys(context)[i]] + "}}"
+        );
+      }
+    }
+  }
+
+  const resp = await generatePrompt(editedPrompt, airesponse, uresponse);
+
+  res.json(resp.data);
+};
+
+const getPrompt = async (req, res) => {
+  if (
+    !req.intent ||
+    !req.body.context ||
+    !req.body.uresponse ||
+    !req.body.airesponse
+  ) {
+    res.status(400).json({
+      error:
+        "Key variable missing! Must include prompt, context, userresponse (uresponse), and airesponse  in body",
+    });
+  }
+
+  const intent = req.intent;
+  const promptText = intent.prompts.slice(-1)[0].text;
+
+  const context = req.body.context;
+  const uresponse = req.body.uresponse;
+  const airesponse = req.body.airesponse;
+
+  const exp = /{{.+?}}/gm;
+
+  const matches = promptText.match(exp);
+
+  let editedPrompt = promptText;
+
+  const len = Object.keys(context).length;
+
+  if (len !== matches.length) {
+    return res.status(400).json({
+      error: "Mismatch between context length and variable length in prompt.",
+    });
+  }
+
+  if (len !== 0) {
+    for (let i = 0; i < len; i++) {
+      const cont_braces = "{{" + Object.keys(context)[i] + "}}";
+      const cur_match = matches[i];
+
+      if (cont_braces !== cur_match) {
+        return res.status(400).json({
+          error: "Variable in context does not match variable in prompt!",
+        });
+      } else {
+        editedPrompt = editedPrompt.replace(
+          editedPrompt.match(cur_match),
+          "{{" + context[Object.keys(context)[i]] + "}}"
+        );
+      }
+    }
+  }
+
+  const resp = await generatePrompt(editedPrompt, airesponse, uresponse);
+
+  res.json(resp);
 };
 export default {
   create,
@@ -189,5 +306,4 @@ export default {
   intentById,
   getCompletion,
   hasAuthorization,
-  createPrompt,
 };

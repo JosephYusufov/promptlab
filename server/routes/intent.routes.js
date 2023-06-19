@@ -29,6 +29,14 @@ router
     intentCtrl.getCompletion
   );
 
+router
+    .route("/api/intents/:intentId/generate")
+    .post(
+        authCtrl.requireSignin,
+        intentCtrl.hasAuthorization,
+        intentCtrl.getPrompt,
+    );
+
 router.param("userId", userCtrl.userByID);
 router.param("intentId", intentCtrl.intentById);
 
