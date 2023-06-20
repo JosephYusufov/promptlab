@@ -1,7 +1,10 @@
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { create } from "./api-prompts";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 
 export default function CreatePrompt({ ...props }) {
   const [values, setValues] = useState({
@@ -102,7 +105,7 @@ export default function CreatePrompt({ ...props }) {
                         className="text-base font-semibold leading-8 text-gray-900 dark:text-white text-xl"
                         id="modal-title"
                       >
-                        Create a Prompt
+                        Create a Prompt Template
                       </h3>
                       <Transition
                         as={Fragment}
@@ -166,6 +169,19 @@ export default function CreatePrompt({ ...props }) {
                               />
                             </div>
                           </div>
+                          <div className="flex gap-1 items-center mt-2 ml-2">
+                            <InformationCircleIcon className="w-5 h-5 text-gray-400"></InformationCircleIcon>{" "}
+                            <div>
+                              <div className="text-gray-400 text-sm">
+                                Wrap a phrase in double curly braces to define a
+                                context variable.
+                              </div>
+                              <div className="text-gray-400 text-sm">
+                                E.g. Explain {"{{topic}}"} in {"{{reference}}"}{" "}
+                                terms.
+                              </div>
+                            </div>
+                          </div>
 
                           <div>
                             <button
@@ -173,7 +189,7 @@ export default function CreatePrompt({ ...props }) {
                               onClick={clickSubmit}
                               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                              Create Prompt
+                              Create Prompt Template
                             </button>
                           </div>
                         </form>
