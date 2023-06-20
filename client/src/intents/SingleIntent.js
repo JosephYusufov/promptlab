@@ -168,7 +168,7 @@ export default function SingleIntent({ ...props }) {
               </div> */}
                 <div className="rounded-md border border-indigo-600">
                   <div className="bg-indigo-950 rounded-md py-2 px-2 flex justify-between">
-                    <h3 className="text-lg text-white">Current Version</h3>
+                    <h3 className="text-lg text-white mx-2">Current Version</h3>
                     <div className="flex gap-2">
                       <button
                         type="button"
@@ -294,7 +294,7 @@ export default function SingleIntent({ ...props }) {
                           leaveTo="transform opacity-0 scale-95"
                           show={err != null}
                         >
-                          <div className="flex justify-start items-center border border-red-600 p-2 mb-4 bg-red-950/50 rounded">
+                          <div className="flex justify-start items-center border border-red-600 p-2 mb-4 mt-4 bg-red-950/50 rounded">
                             <ExclamationCircleIcon className="w-5 h-5 text-red-600 mr-2" />
                             <p className="text-base text-sm font-medium leading-6 text-white">
                               {err}
