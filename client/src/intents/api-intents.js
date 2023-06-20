@@ -58,6 +58,28 @@ const read = async (params, credentials, signal) => {
   }
 };
 
+const getCompletion = async (context, params, credentials) => {
+  // console.log(credentials);
+  context = { context: context };
+  try {
+    let response = await fetch(
+      backendUri + "/api/intent/" + params.intentId + "/completion",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
+        },
+        body: JSON.stringify(context),
+      }
+    );
+    return await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // const update = async (params, credentials, user) => {
 //   try {
 //     let response = await fetch('/api/users/' + params.userId, {
@@ -95,6 +117,7 @@ export {
   create,
   list,
   read,
+  getCompletion,
   // update,
   // remove
 };

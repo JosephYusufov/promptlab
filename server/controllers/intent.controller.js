@@ -138,8 +138,10 @@ const getCompletion = async (req, res) => {
       error: "No Context Provided",
     });
   }
-
+  console.log("getCompletion");
   const context = req.body.context;
+  console.log("context");
+  console.log(context);
   const intent = req.intent;
   console.log(intent);
   const promptText = intent.prompts.slice(-1)[0].text;
