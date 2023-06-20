@@ -23,7 +23,10 @@ const IntentSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  updated: Date,
+  updated: {
+    type: Date,
+    default: Date.now,
+  },
   created: {
     type: Date,
     default: Date.now,
