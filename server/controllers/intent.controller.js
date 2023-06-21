@@ -294,8 +294,11 @@ const getPrompt = async (req, res) => {
   }
 
   const resp = await generatePrompt(promptText, airesponse, uresponse, context);
-
-  res.json(resp);
+  if (resp.error)
+    return res.status(500).json({
+      error: resp.error,
+    });
+  else res.json(resp);
 };
 
 export default {

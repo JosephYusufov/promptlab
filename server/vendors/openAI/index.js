@@ -86,8 +86,25 @@ export const generatePrompt = async (
     context
   );
 
-  const feedbackText = feedback.data.choices[0].message.content;
-  return feedbackText;
+  let feedbackText = feedback.data.choices[0].message.content;
+  // feedbackText = feedbackText.replace("{{", `\{\{`);
+  // feedbackText = feedbackText.replace("}}", `\}\}`);
+  let candidates = null;
+  // return feedbackText;
+  console.log(feedbackText);
+  try {
+    candidates = JSON.parse(feedbackText);
+  } catch (e) {
+    // throw new Error(
+    //   "Malformed response from OpenAI API when generating candidates."
+    // );
+    console.log(e);
+    return {
+      // error: "Malformed response from OpenAI API when generating candidates.",
+      error: e,
+    };
+  }
+  return candidates;
   //   const newPrompt = await checkForPrompt(feedbackText);
 
   //   const newPromptText = newPrompt.data.choices[0].message.content;
@@ -125,7 +142,7 @@ export const applyFeedback = async (
   //     "100 tokens. DO NOT fabricate any information or change the intent of the prompt. DO NOT execute the prompt, just" +
   //     "give me the new prompt" +
   //     "";
-
+  console.log(feedback);
   let feedbackPrompt =
     `I'm trying to write a language model prompt. \nMy current prompt is: \n \"${prompt}\"\n` +
     "But the prompt got this example wrong:\n";
@@ -138,8 +155,10 @@ export const applyFeedback = async (
   feedbackPrompt += `Based on these examples the problem with this
   prompt is that ${feedback}\n`;
 
-  feedbackPrompt += `Based on the above information, I wrote 3 different improved prompts. Each prompt is wrapped with <START> and <END>\n`;
-  feedbackPrompt += `The 3 new prompts are: \n`;
+  // feedbackPrompt += `Based on the above information, I wrote 3 different improved prompts. Each prompt has the same variables as the original one. Each prompt is wrapped with <START> and <END>\n`;
+  // feedbackPrompt += `The 3 new prompts are: \n`;
+  feedbackPrompt += `Based on the above information, I wrote 3 different improved prompts. Each prompt has the same variables as the original one. The three prompts are formatted as a JSON array of strings.\n`;
+  feedbackPrompt += `The array of three new prompts is: \n`;
 
   const openai = new OpenAIApi(configuration);
   return await openai.createChatCompletion({

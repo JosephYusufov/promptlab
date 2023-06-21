@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import auth from "./../auth/auth-helper";
 import { Navigate, Link, useParams } from "react-router-dom";
 import { getCompletion, getCandidates, read } from "./api-intents";
+import { create as createPrompt } from "./../prompts/api-prompts";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ListView from "../elements/ListView";
@@ -52,6 +53,11 @@ export default function SingleIntent({ ...props }) {
     setErr(null);
     setUserOptimizedCompletion(null);
     setCandidates(null);
+    // setCandidates([
+    //   "Provide a brief overview of {{company}}, emphasizing its {{point_1}}. Additionally, discuss the {{point_2}} and {{point_3}} of the company.",
+    //   "In a few sentences, describe {{company}} and highlight its {{point_1}}, as well as {{point_2}} and {{point_3}}.",
+    //   "{{company}} is a company known for its {{point_1}}. Discuss the {{point_2}} and {{point_3}} of the company in a concise manner.",
+    // ]);
 
     if (props.intentId)
       read(
@@ -163,6 +169,24 @@ export default function SingleIntent({ ...props }) {
     // return intent.currentPrompt;
   };
 
+  const handleSelectCandidate = (c) => {
+    createPrompt(
+      { text: c, intent: intent._id, model: intent.model },
+      intent._id,
+      props.params,
+      { t: jwt.token },
+      undefined
+    ).then((data) => {
+      // console.log(data);
+      if (data.error) {
+        setErr(data.error);
+      } else {
+        console.log(data);
+        console.log("created prompt");
+        fetchIntent();
+      }
+    });
+  };
   // const onPromptCreated = () => {
   // };
   return (
@@ -514,11 +538,21 @@ export default function SingleIntent({ ...props }) {
                             {candidates && (
                               <div className="flex flex-col">
                                 <h2 className="text-white text-lg mx-2 mt-4 mb-2">
-                                  3. Candidates
+                                  3. Select a Candidate
                                 </h2>
-                                <div className="p-3 m-2 rounded-md bg-gray-800 italic">
-                                  {candidates}
-                                </div>
+                                {/* <div className="p-3 m-2 rounded-md bg-gray-800 italic"> */}
+                                {candidates.map((c, i) => {
+                                  return (
+                                    <Link
+                                      key={`candidate-${i}`}
+                                      className="p-3 m-2 rounded-md bg-gray-800 italic hover:outline hover:outline-indigo-600"
+                                      onClick={() => handleSelectCandidate(c)}
+                                    >
+                                      {c}
+                                    </Link>
+                                  );
+                                })}
+                                {/* </div> */}
                               </div>
                             )}
                           </div>
@@ -533,7 +567,7 @@ export default function SingleIntent({ ...props }) {
                           leaveTo="transform opacity-0 scale-95"
                           show={err != null}
                         >
-                          <div className="flex justify-start items-center border border-red-600 p-2 mb-4 mt-4 bg-red-950/50 rounded">
+                          <div className="flex justify-start items-center border border-red-600 p-2 mb-4 mt-4 mx-2 bg-red-950/50 rounded">
                             <ExclamationCircleIcon className="w-5 h-5 text-red-600 mr-2" />
                             <p className="text-base text-sm font-medium leading-6 text-white">
                               {err}

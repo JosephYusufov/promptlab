@@ -3,7 +3,7 @@ import { create } from "./api-project";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
-export default function CreateIntent({ ...props }) {
+export default function CreateProject({ ...props }) {
   const [values, setValues] = useState({
     name: "",
     model: "",
@@ -12,12 +12,11 @@ export default function CreateIntent({ ...props }) {
   const cancelButtonRef = useRef(null);
 
   const clickSubmit = () => {
-    const intent = {
+    const project = {
       name: values.name || undefined,
-      model: values.model || undefined,
     };
 
-    create(intent, props.params, props.credentials, undefined).then((data) => {
+    create(project, props.credentials, undefined).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
@@ -122,7 +121,7 @@ export default function CreateIntent({ ...props }) {
                         className="text-base font-semibold leading-8 text-gray-900 dark:text-white text-xl"
                         id="modal-title"
                       >
-                        Create an Intent
+                        Create a Project
                       </h3>
                       <Transition
                         as={Fragment}
@@ -166,33 +165,12 @@ export default function CreateIntent({ ...props }) {
                           </div>
 
                           <div>
-                            <label
-                              htmlFor="model"
-                              className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
-                            >
-                              Model
-                            </label>
-                            <div className="mt-2">
-                              <input
-                                id="model"
-                                name="model"
-                                type="text"
-                                value={values.model}
-                                onChange={handleChange("model")}
-                                autoComplete="model"
-                                required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
-                              />
-                            </div>
-                          </div>
-
-                          <div>
                             <button
                               type="button"
                               onClick={clickSubmit}
                               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                              Create Intent
+                              Create Project
                             </button>
                           </div>
                         </form>

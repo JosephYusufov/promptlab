@@ -27,6 +27,10 @@ export default function SingleProject({ ...props }) {
   dayjs.extend(relativeTime);
 
   const fetchAndUpdateProject = () => {
+    // setProject({});
+    // setIntentId(null);
+    setNoData(false);
+    setOpen(false);
     readProject(
       {
         projectId: params.projectId,
