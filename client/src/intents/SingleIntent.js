@@ -210,7 +210,18 @@ export default function SingleIntent({ ...props }) {
                         ></div>
                       )}
                     </div>
-                    {completionOpen && (
+                    {/* {completionOpen && ( */}
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                      show={completionOpen}
+                      // className="mb-1"
+                    >
                       <div className="mb-1">
                         {intent.contextVariables && (
                           <div>
@@ -302,7 +313,8 @@ export default function SingleIntent({ ...props }) {
                           </div>
                         </Transition>
                       </div>
-                    )}
+                    </Transition>
+                    {/* )} */}
                   </div>
                 </div>
                 <h3 className="text-white text-lg mt-3 px-2">
