@@ -401,8 +401,8 @@ export default function SingleIntent({ ...props }) {
                       <div className="mb-1">
                         {intent.contextVariables && (
                           <div>
-                            <div className="mx-2 my-4 flex justify-start items-center">
-                              <div className="flex items-center">
+                            <div className="mx-2 my-4 flex justify-start items-center md:flex-col">
+                              <div className="flex items-center md:my-4">
                                 <BoltIcon className="w-6 h-6 mr-1 text-sky-500"></BoltIcon>
                                 <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
                                   Optimize v1
