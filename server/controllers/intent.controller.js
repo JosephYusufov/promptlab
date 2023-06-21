@@ -264,7 +264,7 @@ const getPrompt = async (req, res) => {
 
   const matches = promptText.match(exp);
 
-  let editedPrompt = promptText;
+  // let editedPrompt = promptText;
 
   const len = Object.keys(context).length;
 
@@ -283,16 +283,17 @@ const getPrompt = async (req, res) => {
         return res.status(400).json({
           error: "Variable in context does not match variable in prompt!",
         });
-      } else {
-        editedPrompt = editedPrompt.replace(
-          editedPrompt.match(cur_match),
-          "{{" + context[Object.keys(context)[i]] + "}}"
-        );
       }
+      // else {
+      //   editedPrompt = editedPrompt.replace(
+      //     editedPrompt.match(cur_match),
+      //     "{{" + context[Object.keys(context)[i]] + "}}"
+      //   );
+      // }
     }
   }
 
-  const resp = await generatePrompt(editedPrompt, airesponse, uresponse);
+  const resp = await generatePrompt(promptText, airesponse, uresponse, context);
 
   res.json(resp);
 };

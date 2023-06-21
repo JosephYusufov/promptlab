@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import auth from "./../auth/auth-helper";
 import { Navigate, Link, useParams } from "react-router-dom";
-import { getCompletion, read } from "./api-intents";
+import { getCompletion, getCandidates, read } from "./api-intents";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ListView from "../elements/ListView";
@@ -28,10 +28,14 @@ export default function SingleIntent({ ...props }) {
   const [noData, setNoData] = useState(false);
   const [open, setOpen] = useState(false);
   const [completionOpen, setCompletionOpen] = useState(false);
+  const [optimizeOpen, setOptimizeOpen] = useState(false);
   const [contextValues, setContextValues] = useState({});
   const [err, setErr] = useState(null);
   const [completion, setCompletion] = useState(null);
   const [completionLoading, setCompletionLoading] = useState(false);
+  const [userOptimizedCompletion, setUserOptimizedCompletion] = useState(null);
+  const [candidatesLoading, setCandidatesLoading] = useState(false);
+  const [candidates, setCandidates] = useState(null);
 
   const jwt = auth.isAuthenticated();
   console.log(jwt);
@@ -40,11 +44,14 @@ export default function SingleIntent({ ...props }) {
   const fetchIntent = () => {
     // console.log("fetchIntent");
     // console.log(props);
+    // setCompletion({ choices: [{ message: { content: "among balls" } }] });
     setCompletion(null);
     setCompletionOpen(false);
     setCompletionLoading(false);
     setContextValues({});
     setErr(null);
+    setUserOptimizedCompletion(null);
+    setCandidates(null);
 
     if (props.intentId)
       read(
@@ -89,7 +96,7 @@ export default function SingleIntent({ ...props }) {
       });
   };
   useEffect(fetchIntent, [props.intentId]);
-  useEffect(() => {}, [props.intentId]);
+  // useEffect(() => {}, [props.intentId]);
   // const getCompletion = () => {};
 
   const clickRequestCompletion = () => {
@@ -108,8 +115,32 @@ export default function SingleIntent({ ...props }) {
         setErr(data.error);
       } else {
         setCompletion(data);
+        setUserOptimizedCompletion(data.choices[0].message.content);
       }
       setCompletionLoading(false);
+    });
+  };
+
+  const clickSendOptimizedCompletion = () => {
+    console.log(userOptimizedCompletion);
+    if (candidatesLoading) return;
+    setCandidatesLoading(true);
+    getCandidates(
+      userOptimizedCompletion,
+      completion.choices[0].message.content,
+      contextValues,
+      {
+        intentId: props.intentId,
+      },
+      { t: jwt.token }
+    ).then((data) => {
+      console.log(data);
+      if (data.error) {
+        setErr(data.error);
+      } else {
+        setCandidates(data);
+      }
+      setCandidatesLoading(false);
     });
   };
 
@@ -117,6 +148,9 @@ export default function SingleIntent({ ...props }) {
     setContextValues({ ...contextValues, [name]: event.target.value });
   };
 
+  const handleUserOptimizedCompletionChange = (e) => {
+    setUserOptimizedCompletion(e.target.value);
+  };
   const getStyledPromptTemplate = (promptTemplate) => {
     const exp = /{{.+?}}/gm;
     const expression = promptTemplate.replace(
@@ -131,7 +165,6 @@ export default function SingleIntent({ ...props }) {
 
   // const onPromptCreated = () => {
   // };
-
   return (
     <>
       {Object.keys(intent).length && (
@@ -181,7 +214,14 @@ export default function SingleIntent({ ...props }) {
                       <button
                         type="button"
                         className="flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        onClick={() => setCompletionOpen(!completionOpen)}
+                        onClick={() =>
+                          setCompletionOpen((v) => {
+                            if (optimizeOpen && !completionOpen) {
+                              setOptimizeOpen(false);
+                              return true;
+                            } else return !v;
+                          })
+                        }
                       >
                         <Square3Stack3DIcon className="w-5 h-5"></Square3Stack3DIcon>
                         <div>Get Completion</div>
@@ -189,7 +229,14 @@ export default function SingleIntent({ ...props }) {
                       <button
                         type="button"
                         className="flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        onClick={() => setOpen(true)}
+                        onClick={() =>
+                          setOptimizeOpen((v) => {
+                            if (completionOpen && !optimizeOpen) {
+                              setCompletionOpen(false);
+                              return true;
+                            } else return !v;
+                          })
+                        }
                       >
                         <BoltIcon className="w-5 h-5"></BoltIcon>
                         <div>Optimize (v1)</div>
@@ -314,6 +361,188 @@ export default function SingleIntent({ ...props }) {
                         </Transition>
                       </div>
                     </Transition>
+
+                    {/* Optimize */}
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                      show={optimizeOpen}
+                      // className="mb-1"
+                    >
+                      <div className="mb-1">
+                        {intent.contextVariables && (
+                          <div>
+                            <div className="mx-2 my-4 flex justify-start items-center">
+                              <div className="flex items-center">
+                                <BoltIcon className="w-6 h-6 mr-1 text-sky-500"></BoltIcon>
+                                <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
+                                  Optimize v1
+                                </h2>
+                              </div>
+                              <div className="flex gap-2 items-center mt-2 ml-2">
+                                <InformationCircleIcon className="w-5 h-5 text-gray-400"></InformationCircleIcon>{" "}
+                                <div>
+                                  <div className="text-gray-400 text-sm">
+                                    1. Request a completion with real-world
+                                    values. This completion will act as a
+                                    baseline.
+                                  </div>
+                                  <div className="text-gray-400 text-sm">
+                                    2. Edit the resulting completion to make it
+                                    as ideal as possible. What would you want
+                                    the prompt to return?
+                                  </div>
+                                  <div className="text-gray-400 text-sm">
+                                    3. Using your ideal completion, PromptLab
+                                    generates three optimized prompt candidates.
+                                    Pick your favorite!
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <h2 className="text-lg mx-2 my-2">
+                              1. Request Baseline Completion
+                            </h2>
+                            <h3 className="mb-2 px-2">Context Variables</h3>
+                            {intent.contextVariables.map(
+                              (contextVariable, i) => {
+                                return (
+                                  <div
+                                    key={`context-variable-${i}`}
+                                    className="text-white px-2 mb-2 flex items-center justify-between"
+                                  >
+                                    <span className="font-mono text-sm p-1 text-orange-400 bg-gray-800 rounded-md mr-2">
+                                      {`{{${contextVariable}}}`}
+                                    </span>
+                                    <input
+                                      type="text"
+                                      placeholder="value"
+                                      name={contextVariable}
+                                      value={contextValues["contextVariable"]}
+                                      onChange={handleChange(contextVariable)}
+                                      required
+                                      className="w-3/5 text-sm p-2 bg-gray-950 rounded-md border border-gray-700 text-white"
+                                    ></input>
+                                  </div>
+                                );
+                              }
+                            )}
+                          </div>
+                          // </div>
+                        )}
+                        <button
+                          type="button"
+                          className="mt-3 ml-2 rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          onClick={clickRequestCompletion}
+                        >
+                          {completionLoading ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 400 400"
+                              strokeWidth={40}
+                              stroke="#ffffff"
+                              className="w-5 h-5 animate-spin"
+                            >
+                              <path d=" M 360 200 A 160 160 0 1 1 249 48" />
+                            </svg>
+                          ) : (
+                            <div className="flex gap-2 justify-center">
+                              <Square3Stack3DIcon className="w-5 h-5"></Square3Stack3DIcon>
+                              <div>Request Completion</div>
+                            </div>
+                          )}
+                        </button>
+                        <div className="flex gap-1 items-center mt-2 ml-2">
+                          <InformationCircleIcon className="w-5 h-5 text-gray-400"></InformationCircleIcon>{" "}
+                          <div className="text-gray-400 text-sm">
+                            Pressing this button will make a request to the
+                            OpenAI Completions API.
+                          </div>
+                        </div>
+                        {completion && (
+                          <div>
+                            <div className="mx-2 mt-4 mb-2 flex gap-2 items-center">
+                              <CubeTransparentIcon className="w-h h-5 text-white"></CubeTransparentIcon>{" "}
+                              Completion
+                            </div>
+                            <div className="p-3 m-2 rounded-md bg-gray-800 italic">
+                              {completion.choices[0].message.content}
+                            </div>
+                            <h2 className="text-white text-lg mx-2 mt-4 mb-2">
+                              2. Draft Ideal Completion
+                            </h2>
+                            <div className="flex">
+                              <textarea
+                                // type="textarea"
+                                placeholder="Optimized Completion"
+                                // name={contextVariable}
+                                value={userOptimizedCompletion}
+                                onChange={handleUserOptimizedCompletionChange}
+                                required
+                                className="w-full text-sm p-2 m-2 bg-gray-950 rounded-md border border-gray-700 text-white"
+                              ></textarea>
+                            </div>
+                            <button
+                              type="button"
+                              className="mt-3 ml-2 rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              onClick={clickSendOptimizedCompletion}
+                            >
+                              {candidatesLoading ? (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 400 400"
+                                  strokeWidth={40}
+                                  stroke="#ffffff"
+                                  className="w-5 h-5 animate-spin"
+                                >
+                                  <path d=" M 360 200 A 160 160 0 1 1 249 48" />
+                                </svg>
+                              ) : (
+                                <div className="flex gap-2 justify-center">
+                                  <Square3Stack3DIcon className="w-5 h-5"></Square3Stack3DIcon>
+                                  <div>Send Ideal Completion</div>
+                                </div>
+                              )}
+                            </button>
+                            {candidates && (
+                              <div className="flex flex-col">
+                                <h2 className="text-white text-lg mx-2 mt-4 mb-2">
+                                  3. Candidates
+                                </h2>
+                                <div className="p-3 m-2 rounded-md bg-gray-800 italic">
+                                  {candidates}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        <Transition
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                          show={err != null}
+                        >
+                          <div className="flex justify-start items-center border border-red-600 p-2 mb-4 mt-4 bg-red-950/50 rounded">
+                            <ExclamationCircleIcon className="w-5 h-5 text-red-600 mr-2" />
+                            <p className="text-base text-sm font-medium leading-6 text-white">
+                              {err}
+                            </p>
+                          </div>
+                        </Transition>
+                      </div>
+                    </Transition>
+
                     {/* )} */}
                   </div>
                 </div>
@@ -356,6 +585,7 @@ export default function SingleIntent({ ...props }) {
               params={params}
               intent={intent}
               credentials={{ t: jwt.token }}
+              text={intent.currentPrompt ? intent.currentPrompt : ""}
               cb={fetchIntent}
               open={open}
               setOpen={setOpen}

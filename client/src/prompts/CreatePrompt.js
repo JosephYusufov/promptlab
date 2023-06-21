@@ -46,6 +46,9 @@ export default function CreatePrompt({ ...props }) {
     setValues({ ...values, [name]: event.target.value });
   };
 
+  useEffect(() => {
+    setValues({ ...values, text: props.text });
+  }, [props.text]);
   return (
     <>
       <Transition.Root show={props.open} as={Fragment}>

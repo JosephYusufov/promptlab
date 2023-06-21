@@ -80,6 +80,28 @@ const getCompletion = async (context, params, credentials) => {
   }
 };
 
+const getCandidates = async (userRes, aiRes, context, params, credentials) => {
+  // console.log(credentials);
+  let body = { context: context, uresponse: userRes, airesponse: aiRes };
+  try {
+    let response = await fetch(
+      backendUri + "/api/intent/" + params.intentId + "/generate",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    return await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // const update = async (params, credentials, user) => {
 //   try {
 //     let response = await fetch('/api/users/' + params.userId, {
@@ -118,6 +140,7 @@ export {
   list,
   read,
   getCompletion,
+  getCandidates,
   // update,
   // remove
 };

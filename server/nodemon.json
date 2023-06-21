@@ -1,10 +1,5 @@
 {
-    "verbose": false,
-    "watch": [
-      "./controllers",
-      "./helpers",
-      "./models",
-      "./routes"
-    ],
-    "exec": "node ./server.js"
+  "verbose": false,
+  "watch": ["./controllers", "./helpers", "./models", "./routes", "./vendors"],
+  "exec": "node ./server.js"
 }
