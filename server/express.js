@@ -10,6 +10,7 @@ import authRoutes from "./routes/auth.routes.js";
 import promptRoutes from "./routes/prompt.routes.js";
 import intentRoutes from "./routes/intent.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import contextRoutes from "./routes/context.routes.js";
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -48,6 +49,7 @@ app.use("/", userRoutes);
 app.use("/", authRoutes);
 app.use("/", promptRoutes);
 app.use("/", intentRoutes);
+app.use("/", contextRoutes);
 app.use("/", projectRoutes);
 
 // app.get('*', (req, res) => {

@@ -34,6 +34,12 @@ ProjectSchema.virtual("intents", {
   foreignField: "project",
 });
 
+ProjectSchema.virtual("contexts", {
+  ref: "Context",
+  localField: "_id",
+  foreignField: "project",
+});
+
 ProjectSchema.set("toObject", { virtuals: true });
 ProjectSchema.set("toJSON", { virtuals: true });
 
