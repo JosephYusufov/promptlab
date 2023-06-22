@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from "react";
 import auth from "./../auth/auth-helper";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { signin } from "./api-auth.js";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { Transition } from "@headlessui/react";
@@ -14,8 +14,8 @@ export default function Signin(props) {
     redirectToReferrer: false,
   });
   const jwt = auth.isAuthenticated();
+  const navigate = useNavigate();
 
-  useEffect(() => {}, []);
   const clickSubmit = () => {
     const user = {
       email: values.email || undefined,
@@ -48,7 +48,9 @@ export default function Signin(props) {
   //   return <Navigate to={"/"} />;
   // }
 
-  if (jwt) return <Navigate to={`/projects/user/${jwt.user._id}`} />;
+  useEffect(() => {
+    if (jwt) navigate(`/projects/user/${jwt.user._id}`);
+  });
 
   return (
     <>

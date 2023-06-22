@@ -22,6 +22,12 @@ export default function SingleProject({ ...props }) {
   const [intentId, setIntentId] = useState(null);
   const [noData, setNoData] = useState(false);
   const [open, setOpen] = useState(false);
+  const [tabs, setTabs] = useState([
+    { name: "Intents", isActive: true },
+    { name: "Context", isActive: false },
+    { name: "Access", isActive: false },
+    { name: "Settings", isActive: false },
+  ]);
   const jwt = auth.isAuthenticated();
   // console.log(jwt);
   dayjs.extend(relativeTime);
@@ -58,6 +64,14 @@ export default function SingleProject({ ...props }) {
 
   useEffect(fetchAndUpdateProject, [params]);
 
+  const isActiveTab = (s) => {
+    let isActive = false;
+    tabs.map((tab) => {
+      if (s == tab.name && tab.isActive) isActive = true;
+    });
+    return isActive;
+  };
+
   return (
     <div className="h-screen flex flex-col h-[calc(100vh-4rem)]">
       <div className="border-b border-gray-700 mb-7">
@@ -76,48 +90,68 @@ export default function SingleProject({ ...props }) {
           </h2>
         </div>
         <div className="flex justify-start gap-12 ">
-          <Link className="text-white px-3 pb-2 border-b-2 border-indigo-600">
-            Intents
-          </Link>
-          <Link className="text-white px-3 pb-2">Access</Link>
-          <Link className="text-white px-3 pb-2">Settings</Link>
+          {tabs.map((tab, i) => {
+            return (
+              <Link
+                className={`text-white px-3 pb-2 ${
+                  tab.isActive && "border-b-2 border-indigo-600"
+                }`}
+                onClick={() => {
+                  setTabs((state) => {
+                    const newTabs = state.map((v) => {
+                      if (v.name == tab.name) v.isActive = true;
+                      else v.isActive = false;
+                      return v;
+                    });
+                    return newTabs;
+                  });
+                }}
+              >
+                {tab.name}
+              </Link>
+            );
+          })}
         </div>
       </div>
       {/* <hr className="text-center mb-4"></hr> */}
-      <div className="h-5/6 flex justify-between items-start gap-5">
-        <div className="w-1/4 h-full">
-          <div className="flex justify-between items-center  mb-4">
-            <h2 className="text-xl text-white">Intents</h2>
-            <button
-              type="button"
-              className="flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={() => setOpen(true)}
-              //   ref={cancelButtonRef}
-            >
-              <PlusIcon className="w-5 h-5"></PlusIcon>
-            </button>
-          </div>
+      <div>
+        {isActiveTab("Intents") && (
+          <div className="h-5/6 flex justify-between items-start gap-5">
+            <div className="w-1/4 h-full">
+              <div className="flex justify-between items-center  mb-4">
+                <h2 className="text-xl text-white">Intents</h2>
+                <button
+                  type="button"
+                  className="flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={() => setOpen(true)}
+                  //   ref={cancelButtonRef}
+                >
+                  <PlusIcon className="w-5 h-5"></PlusIcon>
+                </button>
+              </div>
 
-          <Sidebar
-            data={project.intents}
-            noData={noData}
-            contentKeys={["name", "model", "version", "created"]}
-            onSelect={onSelect}
-            className="h-full overflow-auto"
-          ></Sidebar>
-        </div>
-        <CreateIntent
-          className="mb-10"
-          params={params}
-          project={project}
-          credentials={{ t: jwt.token }}
-          cb={fetchAndUpdateProject}
-          open={open}
-          setOpen={setOpen}
-        />
-        <div className="intent w-[calc(75%-1.5rem)]">
-          <SingleIntent intentId={intentId}></SingleIntent>
-        </div>
+              <Sidebar
+                data={project.intents}
+                noData={noData}
+                contentKeys={["name", "model", "version", "created"]}
+                onSelect={onSelect}
+                className="h-full overflow-auto"
+              ></Sidebar>
+            </div>
+            <CreateIntent
+              className="mb-10"
+              params={params}
+              project={project}
+              credentials={{ t: jwt.token }}
+              cb={fetchAndUpdateProject}
+              open={open}
+              setOpen={setOpen}
+            />
+            <div className="intent w-[calc(75%-1.5rem)]">
+              <SingleIntent intentId={intentId}></SingleIntent>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
