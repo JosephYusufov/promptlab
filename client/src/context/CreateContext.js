@@ -1,24 +1,27 @@
 import React, { useState, useEffect, Fragment, useRef } from "react";
-import { create } from "./api-intents";
+import { create } from "./api-context";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 
 export default function CreateIntent({ ...props }) {
   const [values, setValues] = useState({
     name: "",
-    model: "",
+    data: "",
     error: "",
   });
   const cancelButtonRef = useRef(null);
 
   const clickSubmit = () => {
-    const intent = {
+    const context = {
       name: values.name || undefined,
-      model: values.model || undefined,
+      data: values.data || undefined,
     };
 
     create(
-      { ...intent, project: props.project._id },
+      { ...context, project: props.project._id },
       props.params,
       props.credentials,
       undefined
@@ -127,7 +130,7 @@ export default function CreateIntent({ ...props }) {
                         className="text-base font-semibold leading-8 text-gray-900 dark:text-white text-xl"
                         id="modal-title"
                       >
-                        Create an Intent
+                        Create a Context Variable
                       </h3>
                       <Transition
                         as={Fragment}
@@ -172,22 +175,33 @@ export default function CreateIntent({ ...props }) {
 
                           <div>
                             <label
-                              htmlFor="model"
+                              htmlFor="text"
                               className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
                             >
-                              Model
+                              Data
                             </label>
                             <div className="mt-2">
-                              <input
-                                id="model"
-                                name="model"
-                                type="text"
-                                value={values.model}
-                                onChange={handleChange("model")}
-                                autoComplete="model"
+                              <textarea
+                                id="text"
+                                name="data"
+                                type="textarea"
+                                rows="6"
+                                value={values.data}
+                                onChange={handleChange("data")}
+                                autoComplete="data"
                                 required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
+                                className="font-mono text-sm block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
                               />
+                            </div>
+                          </div>
+                          <div className="flex gap-2 items-center mt-2 ml-2">
+                            <InformationCircleIcon className="w-7 h-7 text-gray-400"></InformationCircleIcon>{" "}
+                            <div>
+                              <div className="text-gray-400 text-sm">
+                                A context variable can be a JSON object, code
+                                snippet, natural language passage, or any other
+                                plain-text data.
+                              </div>
                             </div>
                           </div>
 
@@ -197,7 +211,7 @@ export default function CreateIntent({ ...props }) {
                               onClick={clickSubmit}
                               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                              Create Intent
+                              Create Context Variable
                             </button>
                           </div>
                         </form>

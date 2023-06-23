@@ -14,7 +14,12 @@ router
 
 router
   .route("/api/context/:contextId/")
-  .get(authCtrl.requireSignin, contextCtrl.hasAuthorization, contextCtrl.read);
+  .get(authCtrl.requireSignin, contextCtrl.hasAuthorization, contextCtrl.read)
+  .put(
+    authCtrl.requireSignin,
+    contextCtrl.hasAuthorization,
+    contextCtrl.update
+  );
 
 router.param("contextId", contextCtrl.contextById);
 

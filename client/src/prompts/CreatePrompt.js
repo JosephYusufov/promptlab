@@ -168,7 +168,7 @@ export default function CreatePrompt({ ...props }) {
                                 onChange={handleChange("text")}
                                 autoComplete="text"
                                 required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
+                                className="font-mono text-sm block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-700"
                               />
                             </div>
                           </div>
@@ -177,7 +177,7 @@ export default function CreatePrompt({ ...props }) {
                             <div>
                               <div className="text-gray-400 text-sm">
                                 Wrap a phrase in double curly braces to define a
-                                context variable.
+                                parameter.
                               </div>
                               <div className="text-gray-400 text-sm">
                                 E.g. Explain {"{{topic}}"} in {"{{reference}}"}{" "}

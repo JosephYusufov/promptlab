@@ -55,25 +55,26 @@ const hasAuthorization = async (req, res, next) => {
   await projectCtrl.hasAuthorization(req, res, next);
 };
 
-// const update = async (req, res) => {
-//   try {
-//     let user = req.profile;
-//     user = extend(user, req.body);
-//     user.updated = Date.now();
-//     await user.save();
-//     user.hashed_password = undefined;
-//     user.salt = undefined;
-//     res.json(user);
-//   } catch (err) {
-//     return res.status(400).json({
-//       error: errorHandler.getErrorMessage(err),
-//     });
-//   }
-// };
+const update = async (req, res) => {
+  try {
+    console.log(req.body);
+    console.log("update context");
+    let context = req.context;
+    context.name = req.body.name ?? context.name;
+    context.data = req.body.data ?? context.data;
+    context.updated = Date.now();
+    await context.save();
+    res.json(context);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
+};
 
 // const remove = async (req, res) => {
 //   try {
-//     let user = req.profile
+//     let user = req.profiles
 //     let deletedUser = await user.remove()
 //     deletedUser.hashed_password = undefined
 //     deletedUser.salt = undefined
@@ -90,6 +91,6 @@ export default {
   read,
   contextById,
   // remove,
-  // update,
+  update,
   hasAuthorization,
 };

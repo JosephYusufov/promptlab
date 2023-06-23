@@ -9,19 +9,24 @@ import ListView from "../elements/ListView";
 import CreateIntent from "../intents/CreateIntent";
 import Sidebar from "../elements/Sidebar";
 import SingleIntent from "../intents/SingleIntent";
+import SingleContext from "../context/SingleContext";
 import {
   CubeTransparentIcon,
   CalendarIcon,
   ArrowPathIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
+import CreateContext from "./../context/CreateContext";
 
 export default function SingleProject({ ...props }) {
   const params = useParams();
   const [project, setProject] = useState({});
   const [intentId, setIntentId] = useState(null);
+  const [contextId, setContextId] = useState(null);
   const [noData, setNoData] = useState(false);
+  const [noContexts, setNoContexts] = useState(false);
   const [open, setOpen] = useState(false);
+  const [createContextOpen, setCreateContextOpen] = useState(false);
   const [tabs, setTabs] = useState([
     { name: "Intents", isActive: true },
     { name: "Context", isActive: false },
@@ -36,6 +41,7 @@ export default function SingleProject({ ...props }) {
     // setProject({});
     // setIntentId(null);
     setNoData(false);
+    setNoContexts(false);
     setOpen(false);
     readProject(
       {
@@ -48,6 +54,7 @@ export default function SingleProject({ ...props }) {
         console.log(data.error);
       } else {
         if (!data.intents.length) setNoData(true);
+        if (!data.contexts.length) setNoContexts(true);
         data.intents.map((intent, i) => {
           intent.created = `Created ${dayjs(intent.created).fromNow(true)} ago`;
           intent.version = `Generation ${intent.version}`;
@@ -60,6 +67,11 @@ export default function SingleProject({ ...props }) {
   const onSelect = (intent) => {
     console.log(intent);
     setIntentId(intent._id);
+  };
+
+  const onSelectContext = (context) => {
+    console.log(context);
+    setContextId(context._id);
   };
 
   useEffect(fetchAndUpdateProject, [params]);
@@ -93,6 +105,7 @@ export default function SingleProject({ ...props }) {
           {tabs.map((tab, i) => {
             return (
               <Link
+                key={`tab-${i}`}
                 className={`text-white px-3 pb-2 ${
                   tab.isActive && "border-b-2 border-indigo-600"
                 }`}
@@ -148,7 +161,56 @@ export default function SingleProject({ ...props }) {
               setOpen={setOpen}
             />
             <div className="intent w-[calc(75%-1.5rem)]">
-              <SingleIntent intentId={intentId}></SingleIntent>
+              <SingleIntent
+                intentId={intentId}
+                project={project}
+              ></SingleIntent>
+            </div>
+          </div>
+        )}
+        {isActiveTab("Context") && (
+          <div className="h-5/6 flex justify-between items-start gap-5">
+            <div className="w-1/4 h-full">
+              <div className="flex justify-between items-center  mb-4">
+                <h2 className="text-xl text-white">Context Variables</h2>
+                <button
+                  type="button"
+                  className="flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={() => setCreateContextOpen(true)}
+                  //   ref={cancelButtonRef}
+                >
+                  <PlusIcon className="w-5 h-5"></PlusIcon>
+                </button>
+              </div>
+
+              <Sidebar
+                data={project.contexts}
+                noData={noContexts}
+                onSelect={onSelectContext}
+                renderListItem={(datum) => {
+                  return (
+                    <div className="text-indigo-400 font-bold bg-gray-800 p-1 rounded-md text-sm font-mono">
+                      {datum.name}
+                    </div>
+                  );
+                }}
+                className="h-full overflow-auto"
+              ></Sidebar>
+            </div>
+            <CreateContext
+              className="mb-10"
+              params={params}
+              project={project}
+              credentials={{ t: jwt.token }}
+              cb={fetchAndUpdateProject}
+              open={createContextOpen}
+              setOpen={setCreateContextOpen}
+            />
+            <div className="intent w-[calc(75%-1.5rem)]">
+              <SingleContext
+                contextId={contextId}
+                fetchProject={fetchAndUpdateProject}
+              ></SingleContext>
             </div>
           </div>
         )}
