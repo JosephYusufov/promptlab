@@ -50,20 +50,13 @@ export default function SingleIntent({ ...props }) {
   console.log(jwt);
   dayjs.extend(relativeTime);
 
-  const userMenuItems = [
-    { name: "Your Profile", href: "#" },
-    { name: "Settings", href: "#" },
-    {
-      name: "Sign Out",
-      href: "#",
-    },
-  ];
   const fetchIntent = () => {
     // console.log("fetchIntent");
     // console.log(props);
     // setCompletion({ choices: [{ message: { content: "among balls" } }] });
     setCompletion(null);
-    setCompletionOpen(true);
+    setCompletionOpen(false);
+    setOptimizeOpen(false);
     setCompletionLoading(false);
     setContextValues({});
     setErr(null);
@@ -432,7 +425,8 @@ export default function SingleIntent({ ...props }) {
                                                         className={classNames(
                                                           "block px-4 py-2  bg-gray-950 underline-offset-4 w-full text-left",
                                                           i <
-                                                            userMenuItems.length -
+                                                            project.contexts
+                                                              .length -
                                                               1
                                                             ? "border-b border-gray-700"
                                                             : ""
@@ -576,15 +570,116 @@ export default function SingleIntent({ ...props }) {
                                     <span className="font-mono text-sm p-1 text-orange-400 bg-gray-800 rounded-md mr-2">
                                       {`{{${contextVariable}}}`}
                                     </span>
-                                    <input
-                                      type="text"
-                                      placeholder="value"
-                                      name={contextVariable}
-                                      value={contextValues["contextVariable"]}
-                                      onChange={handleChange(contextVariable)}
-                                      required
-                                      className="w-3/5 text-sm p-2 bg-gray-950 rounded-md border border-gray-700 text-white"
-                                    ></input>
+                                    <div className="flex items-center justify-between w-3/5">
+                                      {!selectedContextVars[
+                                        contextVariable
+                                      ] && (
+                                        <div className="grow flex flex-col">
+                                          <textarea
+                                            type="text"
+                                            placeholder="value"
+                                            name={contextVariable}
+                                            value={
+                                              contextValues["contextVariable"]
+                                            }
+                                            onChange={handleChange(
+                                              contextVariable
+                                            )}
+                                            required
+                                            className="font-mono grow text-sm p-2 bg-gray-950 rounded-md border border-gray-700 text-white"
+                                          ></textarea>
+                                          {/*  */}
+                                          {/*  */}
+                                          {/*  */}
+                                        </div>
+                                      )}
+                                      {selectedContextVars[contextVariable] && (
+                                        <div className="border border-gray-700 pb-3 pt rounded-md">
+                                          <div className="border-b border-gray-700 px-2 py-1">
+                                            Context Variable
+                                          </div>
+                                          <div className="px-2 pt-1">
+                                            <span className="text-indigo-400 font-bold bg-gray-800 p-1 rounded-md text-sm font-mono hover:underline">
+                                              {
+                                                selectedContextVars[
+                                                  contextVariable
+                                                ].name
+                                              }
+                                            </span>
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {/*  */}
+                                      {/*  */}
+                                      {/*  */}
+                                      <div className="flex items-center">
+                                        {/* Profile dropdown */}
+                                        <Menu
+                                          as="div"
+                                          className="relative ml-3"
+                                        >
+                                          <div>
+                                            <Menu.Button className="flex items-center text-sm">
+                                              <span className="sr-only">
+                                                Open user menu
+                                              </span>
+                                              <button
+                                                type="button"
+                                                className="w-38 ml-2 rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                              >
+                                                <div className="flex gap-2 justify-center items-center">
+                                                  <ArrowLeftOnRectangleIcon className="w-5 h-5"></ArrowLeftOnRectangleIcon>
+                                                  <div>Use Context</div>
+                                                </div>
+                                              </button>
+                                            </Menu.Button>
+                                          </div>
+                                          <Transition
+                                            as={Fragment}
+                                            enter="transition ease-out duration-100"
+                                            enterFrom="transform opacity-0 scale-95"
+                                            enterTo="transform opacity-100 scale-100"
+                                            leave="transition ease-in duration-75"
+                                            leaveFrom="transform opacity-100 scale-100"
+                                            leaveTo="transform opacity-0 scale-95"
+                                          >
+                                            <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-gray-950 shadow-lg ring-1 border border-gray-700 ring-black ring-opacity-5 focus:outline-none">
+                                              {project.contexts.map(
+                                                (item, i) => (
+                                                  <Menu.Item key={"item" + i}>
+                                                    {({ active }) => (
+                                                      <button
+                                                        href={item.href}
+                                                        onClick={() =>
+                                                          handleSelectContextVar(
+                                                            contextVariable,
+                                                            item
+                                                          )
+                                                        }
+                                                        className={classNames(
+                                                          "block px-4 py-2  bg-gray-950 underline-offset-4 w-full text-left",
+                                                          i <
+                                                            project.contexts
+                                                              .length -
+                                                              1
+                                                            ? "border-b border-gray-700"
+                                                            : ""
+                                                        )}
+                                                      >
+                                                        <span className="text-indigo-400 font-bold bg-gray-800 p-1 rounded-md text-sm font-mono hover:underline">
+                                                          {item.name}
+                                                        </span>
+                                                      </button>
+                                                    )}
+                                                  </Menu.Item>
+                                                )
+                                              )}
+                                            </Menu.Items>
+                                          </Transition>
+                                        </Menu>
+                                      </div>
+                                    </div>
                                   </div>
                                 );
                               }
@@ -628,7 +723,7 @@ export default function SingleIntent({ ...props }) {
                               <CubeTransparentIcon className="w-h h-5 text-white"></CubeTransparentIcon>{" "}
                               Completion
                             </div>
-                            <div className="p-3 m-2 rounded-md bg-gray-800 italic">
+                            <div className="p-3 m-2 text-sm font-mono rounded-md bg-gray-800 italic">
                               {completion.choices[0].message.content}
                             </div>
                             <h2 className="text-white text-lg mx-2 mt-4 mb-2">
