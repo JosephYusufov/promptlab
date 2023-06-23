@@ -6,10 +6,16 @@ import errorHandler from "../helpers/dbErrorHandler.js";
 const projectById = async (req, res, next, id) => {
   console.log(id);
   try {
-    let project = await Project.findById(id).populate({
-      path: "intents",
-      options: { sort: { created: -1 } },
-    });
+    let project = await Project.findById(id).populate([
+      {
+        path: "intents",
+        options: { sort: { created: -1 } },
+      },
+      {
+        path: "contexts",
+        options: { sort: { created: -1 } },
+      },
+    ]);
     if (!project)
       return res.status(400).json({
         error: "Project not found",
