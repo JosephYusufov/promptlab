@@ -1,5 +1,6 @@
 import express from "express";
 import stripeCtrl from "../controllers/stripe.controller.js";
+import bodyParser from "body-parser";
 
 const router = express.Router();
 
@@ -9,5 +10,8 @@ router
   .post(stripeCtrl.createCheckoutSession);
 
 router.route("/api/create-portal-session").post(stripeCtrl.createPortalSession);
+router
+  .route("/api/webhook")
+  .post(express.raw({ type: "application/json" }), stripeCtrl.webhook);
 
 export default router;

@@ -23,8 +23,24 @@ const app = express();
 // devBundle.compile(app)
 
 // parse body params and attache them to req.body
-app.use(bodyParser.json());
+// const unless = function (path, middleware) {
+//   console.log("unless called");
+//   return function (req, res, next) {
+//     if (path === req.baseUrl) {
+//       return next();
+//     } else {
+//       return middleware(req, res, next);
+//     }
+//   };
+// };
+
+const verifyReq = (req, res, buf, encoding) => {
+  req.rawBody = buf;
+};
+
+app.use(bodyParser.json({ verify: verifyReq }));
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 app.use(compress());
 // secure apps by setting various HTTP headers

@@ -73,32 +73,38 @@ const createPortalSession = async (req, res, next) => {
   res.json({ url: portalSession.url });
 };
 
+// Events that need to be handled:
+// customer is created: Append stripe customer_id to database
+// subscription changes: update user in db with is_pro or not
+
 const webhook = async (req, res, next) => {
-  let event = request.body;
+  let event = req.rawBody;
   // Replace this endpoint secret with your endpoint's unique secret
   // If you are testing with the CLI, find the secret by running 'stripe listen'
   // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
   // at https://dashboard.stripe.com/webhooks
-  const endpointSecret = "whsec_12345";
+  const endpointSecret =
+    "whsec_45812811e24dd3c7115092e1cdcb5888494133a0b8997d187f1e5a46c094b3ba";
   // Only verify the event if you have an endpoint secret defined.
   // Otherwise use the basic event deserialized with JSON.parse
   if (endpointSecret) {
     // Get the signature sent by Stripe
-    const signature = request.headers["stripe-signature"];
+    const signature = req.headers["stripe-signature"];
     try {
       event = stripe.webhooks.constructEvent(
-        request.body,
+        req.rawBody,
         signature,
         endpointSecret
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`, err.message);
-      return response.sendStatus(400);
+      return res.sendStatus(400);
     }
   }
   let subscription;
   let status;
   // Handle the event
+  console.log(event);
   switch (event.type) {
     case "customer.subscription.trial_will_end":
       subscription = event.data.object;
@@ -133,7 +139,7 @@ const webhook = async (req, res, next) => {
       console.log(`Unhandled event type ${event.type}.`);
   }
   // Return a 200 response to acknowledge receipt of the event
-  response.send();
+  res.send();
 };
 
 export default {

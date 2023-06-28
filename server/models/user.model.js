@@ -28,6 +28,13 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  stripe_customer_id: {
+    type: String,
+  },
+  is_pro: {
+    type: Boolean,
+    default: false,
+  },
   prompts: [
     {
       type: mongoose.Schema.Types.ObjectId,
