@@ -11,6 +11,7 @@ import promptRoutes from "./routes/prompt.routes.js";
 import intentRoutes from "./routes/intent.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import contextRoutes from "./routes/context.routes.js";
+import stripeRoutes from "./routes/stripe.routes.js";
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -37,6 +38,7 @@ app.use(
       "https://www.getpromptlab.io",
       "https://getpromptlab.io",
       "https://www.getpromptlab.io",
+      "*.stripe.com/*",
     ],
     credentials: true,
   })
@@ -51,6 +53,7 @@ app.use("/", promptRoutes);
 app.use("/", intentRoutes);
 app.use("/", contextRoutes);
 app.use("/", projectRoutes);
+app.use("/", stripeRoutes);
 
 // app.get('*', (req, res) => {
 //   // const sheets = new ServerStyleSheets()
