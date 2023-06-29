@@ -27,7 +27,6 @@ const createCheckoutSession = async (params, credentials) => {
         "Content-Type": "application/json",
         Authorization: "Bearer " + credentials.t,
       },
-      // body: JSON.stringify({ lookup_key: "PRO" }),
       body: JSON.stringify(params),
     });
     return await response.json();
@@ -36,13 +35,17 @@ const createCheckoutSession = async (params, credentials) => {
   }
 };
 
-const createPortalSession = async (sessionId) => {
+const createPortalSession = async (credentials) => {
   // console.log(credentials);
   try {
     let response = await fetch(backendUri + "/api/create-portal-session", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ session_id: sessionId }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      // body: JSON.stringify({ session_id: sessionId }),
+      // body: JSON.stringify(params),
     });
     return await response.json();
   } catch (err) {

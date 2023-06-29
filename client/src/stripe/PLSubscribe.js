@@ -39,6 +39,14 @@ export default function PLSubscribe() {
     if (res.message) setMessage(res.message);
   };
 
+  const handlePortalSubmit = async (e) => {
+    e.preventDefault();
+    let res = await createPortalSession({ t: jwt.token });
+    console.log(res);
+    if (res.url) return window.location.replace(res.url);
+    if (res.message) setMessage(res.message);
+  };
+
   // const handlePortalSubmit = async (e) => {
   //   e.preventDefault();
   //   console.log(sessionId);
@@ -79,13 +87,7 @@ export default function PLSubscribe() {
             </h3>
           </div>
         </div>
-        {/* <form onSubmit={handlePortalSubmit}>
-          <input
-            type="hidden"
-            id="session-id"
-            name="session_id"
-            value={sessionId}
-          />
+        <form onSubmit={handlePortalSubmit}>
           <button
             id="checkout-and-portal-button"
             type="submit"
@@ -93,7 +95,7 @@ export default function PLSubscribe() {
           >
             Manage your billing information
           </button>
-        </form> */}
+        </form>
       </section>
     );
   };

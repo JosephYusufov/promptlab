@@ -51,21 +51,32 @@ const createCheckoutSession = async (req, res, next) => {
 };
 
 const createPortalSession = async (req, res, next) => {
-  // For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
-  // Typically this is stored alongside the authenticated user in your database.
-  const { session_id } = req.body;
-  const checkoutSession = await stripe.checkout.sessions.retrieve(session_id);
+  console.log(req.auth);
 
-  // This is the url to which the customer will be redirected when they are done
-  // managing their billing with the portal.
-  const returnUrl = config.frontendUri + "/subscribe/";
+  // find user and get customerId. If it is not null,
+  // append it to the stripe create checkout session request options.
+  let user = await User.findById(req.auth._id);
+  console.log(user);
 
-  const portalSession = await stripe.billingPortal.sessions.create({
-    customer: checkoutSession.customer,
-    return_url: returnUrl,
-  });
+  // If user is not already subscribed then redirect.
+  if (!user.is_pro) res.json({ message: "You are not a PromptLab pro user." });
+  else {
+    let createPortalSessionOptions = {
+      // This is the url to which the customer will be redirected when they are done
+      // managing their billing with the portal.
+      return_url: config.frontendUri + "/subscribe/",
+    };
 
-  res.json({ url: portalSession.url });
+    if (user.stripe_customer_id)
+      createPortalSessionOptions["customer"] = user.stripe_customer_id;
+
+    // create portal session
+    const portalSession = await stripe.billingPortal.sessions.create(
+      createPortalSessionOptions
+    );
+
+    res.json({ url: portalSession.url });
+  }
 };
 
 // Events that need to be handled:
