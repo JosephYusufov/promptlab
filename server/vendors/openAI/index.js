@@ -1,14 +1,17 @@
 import { Configuration, OpenAIApi } from "openai";
 import config from "../../config.js";
 
+//create configuration with the openai api key/organization information from .env
 const configuration = new Configuration({
   organization: config.openaiOrganization,
   apiKey: config.openaiKey,
 });
 
+//Basic generate singular response
 export const generateResponse = async (prompt) => {
-  const openai = new OpenAIApi(configuration);
+  const openai = new OpenAIApi(configuration); //configure OpenAI object
 
+  //complete chat with context
   return await openai.createChatCompletion({
     model: config.openaiModel,
     messages: [{ role: "user", content: prompt }],
@@ -17,6 +20,7 @@ export const generateResponse = async (prompt) => {
   });
 };
 
+//generate a new prompt given feedback/corrections
 export const generatePrompt = async (
   prompt,
   airesponse,
@@ -25,10 +29,11 @@ export const generatePrompt = async (
   iterations = 0,
   feedbackVar = null
 ) => {
-  if (iterations >= 5) {
+  if (iterations >= 5) { //prevent overbilling if no prompt is received
     return "Max Iterations (5) reached";
   }
 
+  //format the original prompt in and nest both the desired response and the AI-generated response
   const feedbackPrompt =
     "I gave this prompt to chatgpt-3.5: " +
     prompt +
@@ -57,6 +62,7 @@ export const generatePrompt = async (
   //     useresponse +
   //     "\nThis marks the end of the ideal response. Given the original prompt template, the user arguments, GPT-3.5's response, and the ideal response, provide an optimized version of the original prompt template that will make GPT-3.5's response more like the ideal response. In your response, make sure to include only the optimized prompt template without any examples. Furthermore, make sure that the optimized prompt template has the same context variables as the original prompt template.";
 
+  //nest the user corrections and ask for feedback
   let gradientPrompt =
     `I'm trying to write a language model prompt. \nMy current prompt is: \n \"${prompt}\"\n` +
     "But the prompt got this example wrong:\n";
@@ -69,6 +75,7 @@ export const generatePrompt = async (
   gradientPrompt += `Give one reason why the prompt could have gotten this examples wrong.
   Wrap the reason with <START> and <END>.\n`;
 
+  //build and submit gradientPrmopt to openAI
   const openai = new OpenAIApi(configuration);
   const response = await openai.createChatCompletion({
     model: config.openaiModel,
@@ -78,6 +85,7 @@ export const generatePrompt = async (
   });
   //   return response.data.choices[0].message.content;
 
+  //apply the response's feedback wrapped in <START> and <END> using the applyFeedback function
   const feedback = await applyFeedback(
     response.data.choices[0].message.content,
     prompt,
@@ -86,12 +94,15 @@ export const generatePrompt = async (
     context
   );
 
+  //parse the response text from applyFeedback
   let feedbackText = feedback.data.choices[0].message.content;
-  // feedbackText = feedbackText.replace("{{", `\{\{`);
-  // feedbackText = feedbackText.replace("}}", `\}\}`);
+
+  //init candidates variable
   let candidates = null;
   // return feedbackText;
   console.log(feedbackText);
+
+  //process feedback responses
   try {
     candidates = JSON.parse(feedbackText);
   } catch (e) {
@@ -122,6 +133,7 @@ export const generatePrompt = async (
   //   }
 };
 
+//Apply the gradient given feedback
 export const applyFeedback = async (
   feedback,
   prompt,
@@ -143,6 +155,8 @@ export const applyFeedback = async (
   //     "give me the new prompt" +
   //     "";
   console.log(feedback);
+
+  //recreate the original prompt and add the feedback array component
   let feedbackPrompt =
     `I'm trying to write a language model prompt. \nMy current prompt is: \n \"${prompt}\"\n` +
     "But the prompt got this example wrong:\n";
@@ -160,6 +174,7 @@ export const applyFeedback = async (
   feedbackPrompt += `Based on the above information, I wrote 3 different improved prompts. Each prompt has the same variables as the original one. The three prompts are formatted as a JSON array of strings.\n`;
   feedbackPrompt += `The array of three new prompts is: \n`;
 
+  //submit the feedback Prompt
   const openai = new OpenAIApi(configuration);
   return await openai.createChatCompletion({
     model: config.openaiModel,
@@ -169,6 +184,7 @@ export const applyFeedback = async (
   });
 };
 
+//Prompt validation function - to check if there's a prompt
 export const checkForPrompt = async (potPrompt) => {
   const modelText =
     "A valid prompt is defined as any request that could be interpreted " +
