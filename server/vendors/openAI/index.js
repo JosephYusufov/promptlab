@@ -7,7 +7,12 @@ const configuration = new Configuration({
   apiKey: config.openaiKey,
 });
 
-//Basic generate singular response
+
+/**
+ * Basic generate singular response
+ * @param prompt
+ * @returns {Promise<AxiosResponse<any, any>>}
+ */
 export const generateResponse = async (prompt) => {
   const openai = new OpenAIApi(configuration); //configure OpenAI object
 
@@ -20,7 +25,17 @@ export const generateResponse = async (prompt) => {
   });
 };
 
-//generate a new prompt given feedback/corrections
+
+/**
+ * generate a new prompt given feedback/corrections
+ * @param prompt original prompt
+ * @param airesponse ai generated response
+ * @param useresponse corrected user response
+ * @param context context variables to replace in prompt
+ * @param iterations number of times the prompt has been generated
+ * @param feedbackVar
+ * @returns {Promise<{error}|*|string>}
+ */
 export const generatePrompt = async (
   prompt,
   airesponse,
@@ -133,7 +148,18 @@ export const generatePrompt = async (
   //   }
 };
 
-//Apply the gradient given feedback
+
+/**
+ * Apply the gradient given feedback
+ * @param feedback feedback from the LLM
+ * @param prompt original prompt
+ * @param airesponse response generated from the ai
+ * @param useresponse response corrected from the user
+ * @param context context variables to be replaced
+ * @param iterations iterations of prompt generated
+ * @param feedbackVar feedback variables
+ * @returns {Promise<AxiosResponse<any, any>>}
+ */
 export const applyFeedback = async (
   feedback,
   prompt,
@@ -184,7 +210,12 @@ export const applyFeedback = async (
   });
 };
 
-//Prompt validation function - to check if there's a prompt
+
+/**
+ * Prompt validation function - to check if there's a prompt
+ * @param potPrompt
+ * @returns {Promise<AxiosResponse<any, any>>}
+ */
 export const checkForPrompt = async (potPrompt) => {
   const modelText =
     "A valid prompt is defined as any request that could be interpreted " +
