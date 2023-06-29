@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 import crypto from "crypto";
+import Stripe from "stripe";
+
+const stripe = new Stripe(
+  "sk_test_51NMtbwHSOMSiIegDG6ASNuLydA3BcIX4V1S2yUUdFSEHBfvKJw1HNdmbsqdbjJRM9bQSg3VAxuphjEuk5gqf517Y00LYx8turx"
+);
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -81,5 +87,19 @@ UserSchema.methods = {
     return Math.round(new Date().valueOf() * Math.random()) + "";
   },
 };
+
+// Create stripe customer and save their customer_id
+UserSchema.pre("save", async function (next) {
+  if (!this.stripe_customer_id)
+    try {
+      const customer = await stripe.customers.create({
+        email: this.email,
+      });
+      this.stripe_customer_id = customer.id;
+      next();
+    } catch (err) {
+      console.log(dbErrorHandler.getErrorMessage(err));
+    }
+});
 
 export default mongoose.model("User", UserSchema);

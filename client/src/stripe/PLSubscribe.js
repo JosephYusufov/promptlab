@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { createCheckoutSession, createPortalSession } from "./api-stripe.js";
 import { useNavigate } from "react-router-dom";
+import auth from "./../auth/auth-helper";
 
 export default function PLSubscribe() {
   let [message, setMessage] = useState("");
   let [success, setSuccess] = useState(false);
   let [sessionId, setSessionId] = useState("");
   let navigate = useNavigate();
+
+  const jwt = auth.isAuthenticated();
+
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
@@ -26,9 +30,13 @@ export default function PLSubscribe() {
 
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
-    let res = await createCheckoutSession();
-    console.log(res.url);
+    let res = await createCheckoutSession(
+      { lookup_key: "PRO" },
+      { t: jwt.token }
+    );
+    console.log(res);
     if (res.url) return window.location.replace(res.url);
+    if (res.message) setMessage(res.message);
   };
 
   // const handlePortalSubmit = async (e) => {
@@ -92,7 +100,7 @@ export default function PLSubscribe() {
 
   const Message = ({ message }) => (
     <section>
-      <p>{message}</p>
+      <p className="text-white">{message}</p>
     </section>
   );
 

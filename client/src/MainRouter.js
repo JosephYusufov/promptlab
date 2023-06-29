@@ -93,8 +93,14 @@ const MainRouter = () => {
                 </PrivateRoute>
               }
             />
-            <Route path="/stripe" element={<PLStripe></PLStripe>} />
-            <Route path="/subscribe" element={<PLSubscribe></PLSubscribe>} />
+            <Route
+              path="/subscribe"
+              element={
+                <PrivateRoute>
+                  <PLSubscribe></PLSubscribe>
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </div>
       </main>

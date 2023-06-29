@@ -1,58 +1,53 @@
 import errorHandler from "../helpers/dbErrorHandler.js";
 import Stripe from "stripe";
 import config from "../config.js";
+import User from "../models/user.model.js";
 
 const stripe = new Stripe(
   "sk_test_51NMtbwHSOMSiIegDG6ASNuLydA3BcIX4V1S2yUUdFSEHBfvKJw1HNdmbsqdbjJRM9bQSg3VAxuphjEuk5gqf517Y00LYx8turx"
 );
 
-const createPaymentIntent = async (req, res, next) => {
-  //   const { items } = req.body;
-  try {
-    // console.log(stripe);
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1400,
-      currency: "usd",
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
-
-    res.send({
-      clientSecret: paymentIntent.client_secret,
-    });
-
-    if (next) next();
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err),
-    });
-  }
-
-  // Create a PaymentIntent with the order amount and currency
-};
-
 const createCheckoutSession = async (req, res, next) => {
-  const prices = await stripe.prices.list({
-    lookup_keys: [req.body.lookup_key],
-    expand: ["data.product"],
-  });
-  const session = await stripe.checkout.sessions.create({
-    billing_address_collection: "auto",
-    line_items: [
-      {
-        price: prices.data[0].id,
-        // For metered billing, do not pass quantity
-        quantity: 1,
-      },
-    ],
-    mode: "subscription",
-    success_url: `${config.frontendUri}/subscribe/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${config.frontendUri}/subscribe/?canceled=true`,
-  });
+  console.log(req.auth);
 
-  res.json({ url: session.url });
+  // find user and get customerId. If it is not null,
+  // append it to the stripe create checkout session request options.
+  let user = await User.findById(req.auth._id);
+  console.log(user);
+
+  // If user is already subscribed then redirect.
+  if (user.is_pro)
+    res.json({ message: "You are already a PromptLab pro user." });
+  else {
+    // get pro subscription price
+    const prices = await stripe.prices.list({
+      lookup_keys: [req.body.lookup_key],
+      expand: ["data.product"],
+    });
+
+    let createCheckoutSessionOptions = {
+      billing_address_collection: "auto",
+      line_items: [
+        {
+          price: prices.data[0].id,
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      success_url: `${config.frontendUri}/subscribe/?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${config.frontendUri}/subscribe/?canceled=true`,
+    };
+
+    if (user.stripe_customer_id)
+      createCheckoutSessionOptions["customer"] = user.stripe_customer_id;
+
+    // create checkout session
+    const session = await stripe.checkout.sessions.create(
+      createCheckoutSessionOptions
+    );
+
+    res.json({ url: session.url });
+  }
 };
 
 const createPortalSession = async (req, res, next) => {
@@ -104,7 +99,7 @@ const webhook = async (req, res, next) => {
   let subscription;
   let status;
   // Handle the event
-  console.log(event);
+  console.log(event.type);
   switch (event.type) {
     case "customer.subscription.trial_will_end":
       subscription = event.data.object;
@@ -134,6 +129,10 @@ const webhook = async (req, res, next) => {
       // Then define and call a method to handle the subscription update.
       // handleSubscriptionUpdated(subscription);
       break;
+    case "invoice.paid":
+      handleInvoicePaid(event);
+      break;
+
     default:
       // Unexpected event type
       console.log(`Unhandled event type ${event.type}.`);
@@ -142,8 +141,19 @@ const webhook = async (req, res, next) => {
   res.send();
 };
 
+const handleInvoicePaid = async (event) => {
+  let invoice = event.data.object;
+  let subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+  if (invoice.paid && subscription.status == "active") {
+    let user = await User.findOne({ stripe_customer_id: invoice.customer });
+    console.log(user);
+    console.log(invoice.customer);
+    if (user) user.is_pro = true;
+    await user.save();
+  }
+};
+
 export default {
-  createPaymentIntent,
   createCheckoutSession,
   createPortalSession,
   webhook,

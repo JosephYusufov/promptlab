@@ -19,13 +19,16 @@ const createPaymentIntent = async () => {
   }
 };
 
-const createCheckoutSession = async () => {
-  console.log("hello");
+const createCheckoutSession = async (params, credentials) => {
   try {
     let response = await fetch(backendUri + "/api/create-checkout-session", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lookup_key: "PRO" }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
+      },
+      // body: JSON.stringify({ lookup_key: "PRO" }),
+      body: JSON.stringify(params),
     });
     return await response.json();
   } catch (err) {
