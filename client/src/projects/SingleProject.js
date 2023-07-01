@@ -30,7 +30,7 @@ export default function SingleProject({ ...props }) {
   const [tabs, setTabs] = useState([
     { name: "Intents", isActive: true },
     { name: "Context", isActive: false },
-    { name: "Access", isActive: false },
+    { name: "Share", isActive: false },
     { name: "Settings", isActive: false },
   ]);
   const jwt = auth.isAuthenticated();
@@ -106,9 +106,9 @@ export default function SingleProject({ ...props }) {
             return (
               <Link
                 key={`tab-${i}`}
-                className={`text-white px-3 pb-2 ${
+                className={`relative text-white px-3 pb-2 ${
                   tab.isActive && "border-b-2 border-indigo-600"
-                }`}
+                } `}
                 onClick={() => {
                   setTabs((state) => {
                     const newTabs = state.map((v) => {
@@ -120,7 +120,14 @@ export default function SingleProject({ ...props }) {
                   });
                 }}
               >
-                {tab.name}
+                {tab.name == "Share" && (
+                  // <div>
+                  <p className="absolute top-0 right-0 mt-[-10px] mr-[-10px] text-xs text-right  font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
+                    PRO
+                  </p>
+                  // </div>
+                )}
+                <div>{tab.name}</div>
               </Link>
             );
           })}

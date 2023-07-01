@@ -138,7 +138,7 @@ const webhook = async (req, res, next) => {
       status = subscription.status;
       console.log(`Subscription status is ${status}.`);
       // Then define and call a method to handle the subscription update.
-      // handleSubscriptionUpdated(subscription);
+      handleSubscriptionUpdated(event);
       break;
     case "invoice.paid":
       handleInvoicePaid(event);
@@ -162,6 +162,10 @@ const handleInvoicePaid = async (event) => {
     if (user) user.is_pro = true;
     await user.save();
   }
+};
+
+const handleSubscriptionUpdated = async (event) => {
+  // if(subscription.status )
 };
 
 export default {
