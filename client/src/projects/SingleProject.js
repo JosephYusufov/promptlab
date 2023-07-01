@@ -17,6 +17,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import CreateContext from "./../context/CreateContext";
+import PLTooltip from "../elements/PLTooltip";
 
 export default function SingleProject({ ...props }) {
   const params = useParams();
@@ -139,7 +140,14 @@ export default function SingleProject({ ...props }) {
           <div className="h-5/6 flex justify-between items-start gap-5">
             <div className="w-1/4 h-full">
               <div className="flex justify-between items-center  mb-4">
-                <h2 className="text-xl text-white">Intents</h2>
+                <div className="flex items-center">
+                  <h2 className="text-xl text-white">Intents</h2>\
+                  <PLTooltip
+                    content={
+                      'Intents are used to store different versions of Prompt Templates.\nFor example, if you\'re testing a prompt to detect sarcasm in a sentence, you would name your Intent:\n\n"Detect Sarcasm".'
+                    }
+                  ></PLTooltip>
+                </div>
                 <button
                   type="button"
                   className="flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

@@ -12,7 +12,7 @@ import errorHandler from "../helpers/dbErrorHandler.js";
  * @returns {Promise<*>}
  */
 const projectById = async (req, res, next, id) => {
-  console.log(id);
+  // console.log(id);
   try {
     //attempt database query to project and populate intents and contexts in specified project
     let project = await Project.findById(id).populate([
@@ -97,8 +97,9 @@ const create = async (req, res) => {
  * @param res
  * @returns {*}
  */
-const read = (req, res) => {
-  return res.json(req.project.toJSON());
+const read = async (req, res) => {
+  let isPro = await req.project.isPro();
+  return res.json({ ...req.project.toJSON(), is_pro: isPro });
 };
 
 // const createIntent = async (req, res, next) => {
@@ -134,6 +135,72 @@ const update = async (req, res) => {
     //update project name to the request body name if exists, otherwise keep the same
     project.name = req.body.name ? req.body.name : project.name;
 
+    await updateIntents(req, res, project); //cascade and update intents
+    await updateMembers(req, res, project); //cascade and update members
+
+    //reset updated time
+    project.updated = Date.now();
+    // console.log(project);
+    try {
+      await project.save(); //save project
+    } catch (e) {
+      console.log(e);
+    }
+
+    //respond with updated project
+    try {
+      res.json(project);
+    } catch (e) {
+      console.log(e);
+    }
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
+};
+
+/**
+ * update intents of a given project
+ * @param req
+ * @param res
+ * @param project
+ * @returns {Promise<*>}
+ */
+const updateIntents = async (req, res, project) => {
+  try {
+    //if there are intents and adding is true, update all intents
+    if (req.body.intents && req.body.intents.add)
+      await Intent.updateMany(
+        { _id: { $in: req.body.intents.add } },
+        { project: project._id }
+      );
+
+    //if there are intents and removing is true, remove the filtered intents
+    if (req.body.intents && req.body.intents.remove)
+      await Intent.deleteMany({ _id: { $in: req.body.intents.remove } });
+    await projectById(req, res, null, project.id);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
+};
+
+/**
+ * update members of a given project: pro feature.
+ * @param req
+ * @param res
+ * @param project
+ * @returns {Promise<*>}
+ */
+const updateMembers = async (req, res, project) => {
+  if (!(await project.isPro()))
+    return res.status(403).json({
+      error:
+        "The owner of this project must be a PromptLab Pro member to use this feature.",
+    });
+  try {
     if (req.body.members) {
       if (req.body.members.add) {
         await Promise.all(
@@ -156,80 +223,23 @@ const update = async (req, res) => {
               email: removedMemberEmail,
             });
             if (removedMember) {
-              console.log("removedMember");
+              // console.log("removedMember");
               project.members = project.members.filter(
-                (member) => member == removedMember
+                (member) => member != removedMember.id
               );
-              console.log(project.members);
+              // console.log(project.members);
             }
           })
         );
       }
+      // console.log(project);
     }
-    //reset updated time
-    project.updated = Date.now();
-    console.log(project);
-    try {
-      await project.save(); //save project
-    } catch (e) {
-      console.log(e);
-    }
-    await updateIntents(req, res); //cascade and update intents
-
-    //respond with updated project
-    res.json(project);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
     });
   }
 };
-
-/**
- * update intents of a given project
- * @param req
- * @param res
- * @returns {Promise<*>}
- */
-const updateIntents = async (req, res) => {
-  try {
-    let project = req.project;
-
-    //if there are intents and adding is true, update all intents
-    if (req.body.intents && req.body.intents.add)
-      await Intent.updateMany(
-        { _id: { $in: req.body.intents.add } },
-        { project: project._id }
-      );
-
-    //if there are intents and removing is true, remove the filtered intents
-    if (req.body.intents && req.body.intents.remove)
-      await Intent.deleteMany({ _id: { $in: req.body.intents.remove } });
-    await projectById(req, res, null, project.id);
-  } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err),
-    });
-  }
-};
-
-// const updateMembers = async (req, res) => {
-//   try {
-//     let project = req.project;
-//     if (req.body.members && req.body.members.add)
-//       await req.body.members.add.map((memberId) => {
-//         User.findByIdAndUpdate(memberId, { project: project._id });
-//       });
-//     if (req.body.members && req.body.members.remove)
-//       await req.body.intents.remove.map((intentId) => {
-//         Intent.findByIdAndRemove(intentId);
-//       });
-//   } catch (err) {
-//     return res.status(400).json({
-//       error: errorHandler.getErrorMessage(err),
-//     });
-//   }
-// };
 
 /**
  * List projects associated with a given user
@@ -251,6 +261,15 @@ const list = async (req, res) => {
   }
 };
 
+const requiresPro = async (req, res, next) => {
+  let isPro = await req.project.isPro();
+  if (!isPro) {
+    return res.status(403).json({
+      error:
+        "The owner of this project must be a PromptLab Pro member to use this feature.",
+    });
+  } else next();
+};
 // const remove = async (req, res) => {
 //   try {
 //     let user = req.profile

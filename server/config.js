@@ -18,6 +18,7 @@ const config = {
   openaiKey: process.env.OPENAI_KEY || null,
   openaiModel: process.env.OPENAI_MODEL || null,
   openaiOrganization: process.env.OPENAI_ORGANIZATION || null,
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY || null,
 };
 
 export default config;

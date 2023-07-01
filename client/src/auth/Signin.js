@@ -60,7 +60,7 @@ export default function Signin(props) {
   // }
 
   useEffect(() => {
-    if (jwt) navigate(`/projects/user/${jwt.user._id}`);
+    if (jwt) navigate(`/project/user/${jwt.user._id}`);
   });
 
   return (

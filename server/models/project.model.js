@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import User from "./user.model.js";
+
 const ProjectSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -39,6 +41,13 @@ ProjectSchema.virtual("contexts", {
   localField: "_id",
   foreignField: "project",
 });
+
+ProjectSchema.methods.isPro = async function () {
+  console.log(this.owner);
+  let owner = await User.findById(this.owner);
+  console.log(owner.is_pro);
+  return owner.is_pro;
+};
 
 ProjectSchema.set("toObject", { virtuals: true });
 ProjectSchema.set("toJSON", { virtuals: true });
