@@ -11,6 +11,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@stripe/stripe-js": "^1.54.1",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
@@ -23,6 +24,7 @@
     "lodash-es": "^4.17.21",
     "mongoose": "^7.2.1",
     "openai": "^3.3.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "stripe": "^12.10.0"
   }
 }

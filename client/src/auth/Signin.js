@@ -1,10 +1,12 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, useContext, Fragment } from "react";
 import auth from "./../auth/auth-helper";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { signin } from "./api-auth.js";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { Transition } from "@headlessui/react";
 import logo from "./../assets/images/logo.png";
+import { CurrentUserContext } from "../App.js";
+import { read } from "./../user/api-user.js";
 
 export default function Signin(props) {
   const [values, setValues] = useState({
@@ -13,10 +15,11 @@ export default function Signin(props) {
     error: "",
     redirectToReferrer: false,
   });
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const jwt = auth.isAuthenticated();
   const navigate = useNavigate();
 
-  const clickSubmit = () => {
+  const clickSubmit = async () => {
     const user = {
       email: values.email || undefined,
       password: values.password || undefined,
@@ -26,9 +29,17 @@ export default function Signin(props) {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        // console.log(data);
-        auth.authenticate(data, () => {
+        console.log(data);
+        auth.authenticate(data, async () => {
           setValues({ ...values, error: "", redirectToReferrer: true });
+
+          // set currentUser context
+          let user = await read(
+            { userId: data.user._id },
+            { t: data.token },
+            null
+          );
+          setCurrentUser(user);
         });
       }
     });
@@ -56,7 +67,7 @@ export default function Signin(props) {
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img className="mx-auto h-12 w-auto" src={logo} alt="Your Company" />
+          {/* <img className="mx-auto h-12 w-auto" src={logo} alt="Your Company" /> */}
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
             Sign in to PromptLab
           </h2>

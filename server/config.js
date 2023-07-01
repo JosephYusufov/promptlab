@@ -4,7 +4,8 @@ dotenv.config();
 const config = {
   env: process.env.NODE_ENV || "development",
   port: process.env.PORT || 3001,
-  backendUri: process.env.BACKEND_URI || null,
+  // backendUri: process.env.BACKEND_URI || null,
+  frontendUri: process.env.FRONTEND_URI || "http://localhost:3000",
   jwtSecret: process.env.JWT_SECRET || "YOUR_secret_key",
   mongoUri:
     process.env.MONGODB_URI ||
