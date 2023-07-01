@@ -6,6 +6,7 @@ import CreateProject from "./CreateProject";
 import ListView from "../elements/ListView";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import PLTooltip from "../elements/PLTooltip";
 
 export default function Projects() {
   const params = useParams();
@@ -74,9 +75,16 @@ export default function Projects() {
   return (
     <>
       <div className="flex mb-6 justify-between items-center">
-        <h2 className="text-center text-2xl leading-9 tracking-tight text-gray-900 dark:text-white">
-          Projects
-        </h2>
+        <div className="flex gap-2 items-center">
+          <h2 className="text-center text-2xl leading-9 tracking-tight text-gray-900 dark:text-white">
+            Projects
+          </h2>
+          <PLTooltip
+            content={
+              'Projects are how you organize your Intents in PromptLab. \nFor example, create a project called "My Project" to get started.'
+            }
+          ></PLTooltip>
+        </div>
         <button
           type="button"
           className="basis-30 flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

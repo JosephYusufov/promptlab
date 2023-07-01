@@ -3,9 +3,7 @@ import Stripe from "stripe";
 import config from "../config.js";
 import User from "../models/user.model.js";
 
-const stripe = new Stripe(
-  "sk_test_51NMtbwHSOMSiIegDG6ASNuLydA3BcIX4V1S2yUUdFSEHBfvKJw1HNdmbsqdbjJRM9bQSg3VAxuphjEuk5gqf517Y00LYx8turx"
-);
+const stripe = new Stripe(config.stripeSecretKey);
 
 const createCheckoutSession = async (req, res, next) => {
   console.log(req.auth);
