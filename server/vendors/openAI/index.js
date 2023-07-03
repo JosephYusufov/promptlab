@@ -233,3 +233,7 @@ export const checkForPrompt = async (potPrompt) => {
     max_tokens: 100,
   });
 };
+
+const getPrice = (prompt) => {
+
+}
