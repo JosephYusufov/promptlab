@@ -32,6 +32,7 @@ const PromptSchema = new mongoose.Schema({
   },
 });
 
+//Validate
 PromptSchema.pre("validate", async function (next) {
   console.log("middleware");
   // console.log("this");
@@ -40,8 +41,8 @@ PromptSchema.pre("validate", async function (next) {
   // console.log("intentId ");
   // console.log(intentId);
   try {
-    let intent = await Intent.findById(intentId);
-    this.generation = intent.version + 1;
+    let intent = await Intent.findById(intentId); //make sure intent exists
+    this.generation = intent.version + 1; //increment version because of new prompt
     intent.version += 1;
     await intent.save();
     console.log(this);

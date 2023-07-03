@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+
+//Context Model
 const ContextSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -6,7 +8,7 @@ const ContextSchema = new mongoose.Schema({
     required: "A name is required.",
   },
   project: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId, //project ID that context is associated with
     ref: "Project",
     required: "A project is required.",
   },
@@ -29,6 +31,9 @@ const ContextSchema = new mongoose.Schema({
   },
 });
 
+/**
+ * Validates context
+ */
 ContextSchema.pre("validate", async function (next) {
   //   console.log("middleware");
   // console.log("this");

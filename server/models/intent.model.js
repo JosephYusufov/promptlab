@@ -39,12 +39,14 @@ const IntentSchema = new mongoose.Schema({
   // ],
 });
 
+//Foreign key reference to prompts associated with intent ID
 IntentSchema.virtual("prompts", {
   ref: "Prompt",
   localField: "_id",
   foreignField: "intent",
 });
-IntentSchema.set("toObject", { virtuals: true });
-IntentSchema.set("toJSON", { virtuals: true });
+
+IntentSchema.set("toObject", { virtuals: true }); //retrieve foreign key objects when transforming to object
+IntentSchema.set("toJSON", { virtuals: true }); //retrieve foreign key objects when transforming to JSON
 
 export default mongoose.model("Intent", IntentSchema);

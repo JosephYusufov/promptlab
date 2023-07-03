@@ -28,18 +28,21 @@ const ProjectSchema = new mongoose.Schema({
   },
 });
 
+//Retrieve intents associated with project
 ProjectSchema.virtual("intents", {
   ref: "Intent",
   localField: "_id",
   foreignField: "project",
 });
 
+//Retrieve contexts associated with project
 ProjectSchema.virtual("contexts", {
   ref: "Context",
   localField: "_id",
   foreignField: "project",
 });
 
+//include foreign key references when converting to object and JSON formats
 ProjectSchema.set("toObject", { virtuals: true });
 ProjectSchema.set("toJSON", { virtuals: true });
 
