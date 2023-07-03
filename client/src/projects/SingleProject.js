@@ -17,6 +17,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import CreateContext from "./../context/CreateContext";
+import PLTooltip from "../elements/PLTooltip";
 
 export default function SingleProject({ ...props }) {
   const params = useParams();
@@ -30,7 +31,7 @@ export default function SingleProject({ ...props }) {
   const [tabs, setTabs] = useState([
     { name: "Intents", isActive: true },
     { name: "Context", isActive: false },
-    { name: "Access", isActive: false },
+    { name: "Share", isActive: false },
     { name: "Settings", isActive: false },
   ]);
   const jwt = auth.isAuthenticated();
@@ -106,9 +107,9 @@ export default function SingleProject({ ...props }) {
             return (
               <Link
                 key={`tab-${i}`}
-                className={`text-white px-3 pb-2 ${
+                className={`relative text-white px-3 pb-2 ${
                   tab.isActive && "border-b-2 border-indigo-600"
-                }`}
+                } `}
                 onClick={() => {
                   setTabs((state) => {
                     const newTabs = state.map((v) => {
@@ -120,7 +121,14 @@ export default function SingleProject({ ...props }) {
                   });
                 }}
               >
-                {tab.name}
+                {tab.name == "Share" && (
+                  // <div>
+                  <p className="absolute top-0 right-0 mt-[-10px] mr-[-10px] text-xs text-right  font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
+                    PRO
+                  </p>
+                  // </div>
+                )}
+                <div>{tab.name}</div>
               </Link>
             );
           })}
@@ -132,7 +140,14 @@ export default function SingleProject({ ...props }) {
           <div className="h-5/6 flex justify-between items-start gap-5">
             <div className="w-1/4 h-full">
               <div className="flex justify-between items-center  mb-4">
-                <h2 className="text-xl text-white">Intents</h2>
+                <div className="flex items-center">
+                  <h2 className="text-xl text-white">Intents</h2>\
+                  <PLTooltip
+                    content={
+                      'Intents are used to store different versions of Prompt Templates.\nFor example, if you\'re testing a prompt to detect sarcasm in a sentence, you would name your Intent:\n\n"Detect Sarcasm".'
+                    }
+                  ></PLTooltip>
+                </div>
                 <button
                   type="button"
                   className="flex gap-2 justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

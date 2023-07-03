@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 import crypto from "crypto";
+import Stripe from "stripe";
+
+const stripe = new Stripe(
+  "sk_test_51NMtbwHSOMSiIegDG6ASNuLydA3BcIX4V1S2yUUdFSEHBfvKJw1HNdmbsqdbjJRM9bQSg3VAxuphjEuk5gqf517Y00LYx8turx"
+);
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -9,12 +15,14 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     trim: false,
+    unique: true,
     required: "Username is required",
   },
   email: {
     type: String,
     trim: true,
-    unique: "Email already exists",
+    unique: true,
+    // unique: "Email already exists",
     match: [/.+\@.+\..+/, "Please fill a valid email address"],
     required: "Email is required",
   },
@@ -27,6 +35,13 @@ const UserSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now,
+  },
+  stripe_customer_id: {
+    type: String,
+  },
+  is_pro: {
+    type: Boolean,
+    default: false,
   },
   prompts: [
     {
@@ -74,5 +89,19 @@ UserSchema.methods = {
     return Math.round(new Date().valueOf() * Math.random()) + "";
   },
 };
+
+// Create stripe customer and save their customer_id
+UserSchema.pre("save", async function (next) {
+  if (!this.stripe_customer_id)
+    try {
+      const customer = await stripe.customers.create({
+        email: this.email,
+      });
+      this.stripe_customer_id = customer.id;
+      next();
+    } catch (err) {
+      console.log(dbErrorHandler.getErrorMessage(err));
+    }
+});
 
 export default mongoose.model("User", UserSchema);
