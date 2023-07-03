@@ -3,7 +3,6 @@ import Intent from "../models/intent.model.js";
 import User from "../models/user.model.js";
 import errorHandler from "../helpers/dbErrorHandler.js";
 
-
 /**
  * get project object from database based on project id
  * @param req
@@ -13,8 +12,9 @@ import errorHandler from "../helpers/dbErrorHandler.js";
  * @returns {Promise<*>}
  */
 const projectById = async (req, res, next, id) => {
-  console.log(id);
-  try { //attempt database query to project and populate intents and contexts in specified project
+  // console.log(id);
+  try {
+    //attempt database query to project and populate intents and contexts in specified project
     let project = await Project.findById(id).populate([
       {
         path: "intents",
@@ -36,7 +36,8 @@ const projectById = async (req, res, next, id) => {
     //append project object to request and go to next
     req.project = project;
     if (next) next();
-  } catch (err) { //handle database querying errors
+  } catch (err) {
+    //handle database querying errors
     console.log(err);
     return res.status(400).json({
       error: "Could not retrieve project",
@@ -52,7 +53,6 @@ const projectById = async (req, res, next, id) => {
  * @returns {Promise<*>}
  */
 const hasAuthorization = async (req, res, next) => {
-
   //require that a project and user exist and the project owner matches the requester's id
   const authorized =
     req.project && req.auth && req.auth._id == req.project.owner;
@@ -66,7 +66,6 @@ const hasAuthorization = async (req, res, next) => {
   next();
 };
 
-
 /**
  * Create a new project
  * @param req
@@ -74,23 +73,23 @@ const hasAuthorization = async (req, res, next) => {
  * @returns {Promise<*>}
  */
 const create = async (req, res) => {
-
   //define user and create project based on body parameters, specifying the owner as the user
   let user = req.auth;
   let project = new Project({ ...req.body, owner: user._id });
 
-  try { //attempt to save to database
+  try {
+    //attempt to save to database
     await project.save();
     return res.status(200).json({
       message: "Succesfully created a new Project.",
     });
-  } catch (err) { //handle error if save fails
+  } catch (err) {
+    //handle error if save fails
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
     });
   }
 };
-
 
 /**
  * Read a new project
@@ -98,8 +97,9 @@ const create = async (req, res) => {
  * @param res
  * @returns {*}
  */
-const read = (req, res) => {
-  return res.json(req.project);
+const read = async (req, res) => {
+  let isPro = await req.project.isPro();
+  return res.json({ ...req.project.toJSON(), is_pro: isPro });
 };
 
 // const createIntent = async (req, res, next) => {
@@ -130,19 +130,29 @@ const read = (req, res) => {
  */
 const update = async (req, res) => {
   try {
-
     let project = req.project;
 
     //update project name to the request body name if exists, otherwise keep the same
     project.name = req.body.name ? req.body.name : project.name;
 
+    await updateIntents(req, res, project); //cascade and update intents
+    await updateMembers(req, res, project); //cascade and update members
+
     //reset updated time
     project.updated = Date.now();
-    await project.save(); //save project
-    await updateIntents(req, res); //cascade and update intents
+    // console.log(project);
+    try {
+      await project.save(); //save project
+    } catch (e) {
+      console.log(e);
+    }
 
     //respond with updated project
-    res.json(req.project);
+    try {
+      res.json(project);
+    } catch (e) {
+      console.log(e);
+    }
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
@@ -154,13 +164,11 @@ const update = async (req, res) => {
  * update intents of a given project
  * @param req
  * @param res
+ * @param project
  * @returns {Promise<*>}
  */
-const updateIntents = async (req, res) => {
+const updateIntents = async (req, res, project) => {
   try {
-
-    let project = req.project;
-
     //if there are intents and adding is true, update all intents
     if (req.body.intents && req.body.intents.add)
       await Intent.updateMany(
@@ -172,7 +180,6 @@ const updateIntents = async (req, res) => {
     if (req.body.intents && req.body.intents.remove)
       await Intent.deleteMany({ _id: { $in: req.body.intents.remove } });
     await projectById(req, res, null, project.id);
-
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
@@ -180,23 +187,59 @@ const updateIntents = async (req, res) => {
   }
 };
 
-// const updateMembers = async (req, res) => {
-//   try {
-//     let project = req.project;
-//     if (req.body.members && req.body.members.add)
-//       await req.body.members.add.map((memberId) => {
-//         User.findByIdAndUpdate(memberId, { project: project._id });
-//       });
-//     if (req.body.members && req.body.members.remove)
-//       await req.body.intents.remove.map((intentId) => {
-//         Intent.findByIdAndRemove(intentId);
-//       });
-//   } catch (err) {
-//     return res.status(400).json({
-//       error: errorHandler.getErrorMessage(err),
-//     });
-//   }
-// };
+/**
+ * update members of a given project: pro feature.
+ * @param req
+ * @param res
+ * @param project
+ * @returns {Promise<*>}
+ */
+const updateMembers = async (req, res, project) => {
+  if (!(await project.isPro()))
+    return res.status(403).json({
+      error:
+        "The owner of this project must be a PromptLab Pro member to use this feature.",
+    });
+  try {
+    if (req.body.members) {
+      if (req.body.members.add) {
+        await Promise.all(
+          req.body.members.add.map(async (newMemberEmail) => {
+            let newMember = await User.findOne({ email: newMemberEmail });
+            if (
+              newMember &&
+              !project.members.includes(newMember._id) &&
+              newMember.id != project.owner
+            ) {
+              project.members.push(newMember._id);
+            }
+          })
+        );
+      }
+      if (req.body.members.remove) {
+        await Promise.all(
+          req.body.members.remove.map(async (removedMemberEmail) => {
+            let removedMember = await User.findOne({
+              email: removedMemberEmail,
+            });
+            if (removedMember) {
+              // console.log("removedMember");
+              project.members = project.members.filter(
+                (member) => member != removedMember.id
+              );
+              // console.log(project.members);
+            }
+          })
+        );
+      }
+      // console.log(project);
+    }
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
+};
 
 /**
  * List projects associated with a given user
@@ -205,7 +248,6 @@ const updateIntents = async (req, res) => {
  * @returns {Promise<*>}
  */
 const list = async (req, res) => {
-
   //get user profile
   let user = req.profile;
 
@@ -219,6 +261,15 @@ const list = async (req, res) => {
   }
 };
 
+const requiresPro = async (req, res, next) => {
+  let isPro = await req.project.isPro();
+  if (!isPro) {
+    return res.status(403).json({
+      error:
+        "The owner of this project must be a PromptLab Pro member to use this feature.",
+    });
+  } else next();
+};
 // const remove = async (req, res) => {
 //   try {
 //     let user = req.profile

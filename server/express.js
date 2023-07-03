@@ -11,6 +11,7 @@ import promptRoutes from "./routes/prompt.routes.js";
 import intentRoutes from "./routes/intent.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import contextRoutes from "./routes/context.routes.js";
+import stripeRoutes from "./routes/stripe.routes.js";
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -22,8 +23,24 @@ const app = express();
 // devBundle.compile(app)
 
 // parse body params and attache them to req.body
-app.use(bodyParser.json());
+// const unless = function (path, middleware) {
+//   console.log("unless called");
+//   return function (req, res, next) {
+//     if (path === req.baseUrl) {
+//       return next();
+//     } else {
+//       return middleware(req, res, next);
+//     }
+//   };
+// };
+
+const verifyReq = (req, res, buf, encoding) => {
+  req.rawBody = buf;
+};
+
+app.use(bodyParser.json({ verify: verifyReq }));
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 app.use(compress());
 // secure apps by setting various HTTP headers
@@ -37,6 +54,7 @@ app.use(
       "https://www.getpromptlab.io",
       "https://getpromptlab.io",
       "https://www.getpromptlab.io",
+      "*.stripe.com/*",
     ],
     credentials: true,
   })
@@ -51,6 +69,7 @@ app.use("/", promptRoutes);
 app.use("/", intentRoutes);
 app.use("/", contextRoutes);
 app.use("/", projectRoutes);
+app.use("/", stripeRoutes);
 
 // app.get('*', (req, res) => {
 //   // const sheets = new ServerStyleSheets()

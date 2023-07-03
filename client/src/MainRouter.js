@@ -14,6 +14,8 @@ import Intents from "./intents/Intents";
 import SingleIntent from "./intents/SingleIntent";
 import Projects from "./projects/Projects";
 import SingleProject from "./projects/SingleProject";
+import PLStripe from "./stripe/PLStripe";
+import PLSubscribe from "./stripe/PLSubscribe";
 
 const MainRouter = () => {
   return (
@@ -88,6 +90,14 @@ const MainRouter = () => {
               element={
                 <PrivateRoute>
                   <SingleProject />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/subscribe"
+              element={
+                <PrivateRoute>
+                  <PLSubscribe></PLSubscribe>
                 </PrivateRoute>
               }
             />

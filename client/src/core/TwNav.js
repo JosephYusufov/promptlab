@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useContext } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -9,6 +9,7 @@ import {
 import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import auth from "./../auth/auth-helper";
 import logo from "../assets/images/logo.png";
+import { CurrentUserContext } from "../App.js";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -25,6 +26,7 @@ export default function TwNav() {
     { name: "Sign In", href: "/signin" },
   ]);
   const [userMenuItems, setUserMenuItems] = useState([]);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
 
   useEffect(() => {
     if (auth.isAuthenticated()) {
@@ -40,11 +42,18 @@ export default function TwNav() {
 
   useEffect(() => {
     if (user) {
-      setMenuItems([
+      let proMenuItems = [
         // { name: "Prompts", href: "/prompts/" + user._id },
-        { name: "Intents", href: "/intents/" + user._id },
         { name: "Projects", href: "/project/user/" + user._id },
-      ]);
+        // { name: "Go Pro", href: "/subscribe" },
+      ];
+      let menuItems = [
+        // { name: "Prompts", href: "/prompts/" + user._id },
+        { name: "Projects", href: "/project/user/" + user._id },
+        { name: "Go Pro", href: "/subscribe" },
+      ];
+      if (currentUser && currentUser.is_pro) setMenuItems(proMenuItems);
+      else setMenuItems(menuItems);
       setUserMenuItems([
         { name: "Your Profile", href: "#" },
         { name: "Settings", href: "#" },
@@ -54,6 +63,7 @@ export default function TwNav() {
           onClick: () => {
             auth.clearJWT(() => {
               setUser(null);
+              setCurrentUser(null);
               navigate("/");
             });
           },
@@ -80,9 +90,16 @@ export default function TwNav() {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <Link to={"/"} className="flex flex-shrink-0">
-                      <img className="h-8 w-8" src={logo} alt="Your Company" />
-                      <h2 className="text-xl text-white font-bold ml-2">
-                        PromptLab
+                      {/* <img className="h-8 w-8" src={logo} alt="Your Company" /> */}
+                      <h2 className="text-xl text-white font-bold">
+                        PromptLab{" "}
+                        {currentUser?.is_pro ? (
+                          <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%">
+                            PRO
+                          </span>
+                        ) : (
+                          ""
+                        )}
                       </h2>
                     </Link>
                     <div className="hidden md:block">
@@ -95,7 +112,11 @@ export default function TwNav() {
                               (isActive(location, item.href)
                                 ? "underline"
                                 : "hover:underline") +
-                              " underline-offset-4 rounded-md px-3 text-white py-2 text-sm font-medium"
+                              " underline-offset-4 rounded-md px-3 text-white py-2 text-sm font-medium" +
+                              (item.name == "Go Pro"
+                                ? // ? "text-xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
+                                  "text-xl font-bold bg-indigo-600"
+                                : "")
                             }
                             aria-current={
                               isActive(location, item.href) ? "page" : undefined
@@ -111,22 +132,14 @@ export default function TwNav() {
                   {user && (
                     <div className="hidden md:block">
                       <div className="ml-4 flex items-center md:ml-6">
-                        <button
-                          type="button"
-                          className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                        >
-                          <span className="sr-only">View notifications</span>
-                          <BellIcon className="h-6 w-6" aria-hidden="true" />
-                        </button>
-
                         {/* Profile dropdown */}
                         <Menu as="div" className="relative ml-3">
                           <div>
-                            <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                            <Menu.Button className="flex max-w-xs items-center rounded-full hover:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                               <span className="sr-only">Open user menu</span>
                               <button
                                 type="button"
-                                className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                className="rounded-full p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                               >
                                 <span className="sr-only">
                                   View notifications

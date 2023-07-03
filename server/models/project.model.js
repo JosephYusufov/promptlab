@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import User from "./user.model.js";
+
 const ProjectSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -42,7 +44,6 @@ ProjectSchema.virtual("contexts", {
   foreignField: "project",
 });
 
-//include foreign key references when converting to object and JSON formats
 ProjectSchema.set("toObject", { virtuals: true });
 ProjectSchema.set("toJSON", { virtuals: true });
 
