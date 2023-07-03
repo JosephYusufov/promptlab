@@ -30,24 +30,19 @@ const ProjectSchema = new mongoose.Schema({
   },
 });
 
+//Retrieve intents associated with project
 ProjectSchema.virtual("intents", {
   ref: "Intent",
   localField: "_id",
   foreignField: "project",
 });
 
+//Retrieve contexts associated with project
 ProjectSchema.virtual("contexts", {
   ref: "Context",
   localField: "_id",
   foreignField: "project",
 });
-
-ProjectSchema.methods.isPro = async function () {
-  console.log(this.owner);
-  let owner = await User.findById(this.owner);
-  console.log(owner.is_pro);
-  return owner.is_pro;
-};
 
 ProjectSchema.set("toObject", { virtuals: true });
 ProjectSchema.set("toJSON", { virtuals: true });
