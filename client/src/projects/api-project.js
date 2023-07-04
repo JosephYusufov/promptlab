@@ -22,6 +22,26 @@ const create = async (project, credentials) => {
   }
 };
 
+const update = async (params, body, credentials) => {
+  try {
+    let response = await fetch(
+      backendUri + "/api/project/" + params.projectId,
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    return await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const list = async (params, credentials) => {
   try {
     let response = await fetch(
@@ -115,6 +135,6 @@ export {
   list,
   read,
   createIntentAndAddToProject,
-  // update,
+  update,
   // remove
 };

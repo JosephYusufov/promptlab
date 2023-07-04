@@ -15,16 +15,18 @@ const projectById = async (req, res, next, id) => {
   // console.log(id);
   try {
     //attempt database query to project and populate intents and contexts in specified project
-    let project = await Project.findById(id).populate([
-      {
-        path: "intents",
-        options: { sort: { created: -1 } },
-      },
-      {
-        path: "contexts",
-        options: { sort: { created: -1 } },
-      },
-    ]);
+    let project = await Project.findById(id)
+      .populate([
+        {
+          path: "intents",
+          options: { sort: { created: -1 } },
+        },
+        {
+          path: "contexts",
+          options: { sort: { created: -1 } },
+        },
+      ])
+      .exec();
 
     //throw error if project id doesn't locate a project
     if (!project)
@@ -55,7 +57,10 @@ const projectById = async (req, res, next, id) => {
 const hasAuthorization = async (req, res, next) => {
   //require that a project and user exist and the project owner matches the requester's id
   const authorized =
-    req.project && req.auth && req.auth._id == req.project.owner;
+    req.project &&
+    req.auth &&
+    (req.auth._id == req.project.owner ||
+      req.project.members.includes(req.auth._id));
   // TODO: Authorize users who are members or admins as well.
   //   || req.auth._id
   if (!authorized) {
@@ -98,8 +103,12 @@ const create = async (req, res) => {
  * @returns {*}
  */
 const read = async (req, res) => {
-  let isPro = await req.project.isPro();
-  return res.json({ ...req.project.toJSON(), is_pro: isPro });
+  await req.project.populate("members");
+  return res.json({
+    ...req.project.toJSON(),
+    is_pro: await req.project.isPro(),
+    owner_username: await req.project.getOwnerUsername(),
+  });
 };
 
 // const createIntent = async (req, res, next) => {
@@ -252,8 +261,31 @@ const list = async (req, res) => {
   let user = req.profile;
 
   try {
-    let projects = await Project.find({ owner: user._id }).exec(); //find all projects belonging to user
-    res.json(projects); //return projects
+    let ownedProjects = await Project.find({ owner: user._id }).exec();
+    ownedProjects = await Promise.all(
+      ownedProjects.map(async (p) => {
+        if (p)
+          return {
+            ...p.toJSON(),
+            is_pro: await p.isPro(),
+            owner_username: await p.getOwnerUsername(),
+          };
+        else return p;
+      })
+    );
+    let sharedProjects = await Project.find({ members: user._id }).exec();
+    sharedProjects = await Promise.all(
+      sharedProjects.map(async (p) => {
+        if (p)
+          return {
+            ...p.toObject(),
+            is_pro: await p.isPro(),
+            owner_username: await p.getOwnerUsername(),
+          };
+        else return p;
+      })
+    );
+    res.json({ owned: ownedProjects, shared: sharedProjects }); //return projects
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
@@ -292,5 +324,6 @@ export default {
   hasAuthorization,
   // remove,
   update,
+  requiresPro,
   projectById,
 };

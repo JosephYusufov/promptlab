@@ -18,6 +18,7 @@ import {
 } from "@heroicons/react/24/outline";
 import CreateContext from "./../context/CreateContext";
 import PLTooltip from "../elements/PLTooltip";
+import ShareProject from "./ShareProject";
 
 export default function SingleProject({ ...props }) {
   const params = useParams();
@@ -88,7 +89,7 @@ export default function SingleProject({ ...props }) {
   return (
     <div className="h-screen flex flex-col h-[calc(100vh-4rem)]">
       <div className="border-b border-gray-700 mb-7">
-        <div className="flex justify-start items-center mb-7 ">
+        <div className=" flex justify-start items-center mb-7 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -97,9 +98,14 @@ export default function SingleProject({ ...props }) {
           >
             <path d="M2 4.25A2.25 2.25 0 014.25 2h2.5A2.25 2.25 0 019 4.25v2.5A2.25 2.25 0 016.75 9h-2.5A2.25 2.25 0 012 6.75v-2.5zM2 13.25A2.25 2.25 0 014.25 11h2.5A2.25 2.25 0 019 13.25v2.5A2.25 2.25 0 016.75 18h-2.5A2.25 2.25 0 012 15.75v-2.5zM11 4.25A2.25 2.25 0 0113.25 2h2.5A2.25 2.25 0 0118 4.25v2.5A2.25 2.25 0 0115.75 9h-2.5A2.25 2.25 0 0111 6.75v-2.5zM15.25 11.75a.75.75 0 00-1.5 0v2h-2a.75.75 0 000 1.5h2v2a.75.75 0 001.5 0v-2h2a.75.75 0 000-1.5h-2v-2z" />
           </svg>
-          <h2 className=" text-center text-2xl font-regular leading-9 tracking-tight text-gray-900 dark:text-white">
+          <h2 className="relative text-center text-2xl font-regular leading-9 tracking-tight text-gray-900 dark:text-white">
             {/* <span>{jwt.user.username}</span> / */}
             <span className="font-semibold"> {project.name} </span>
+            {project.is_pro && (
+              <p className="absolute top-0 right-0 mt-[-10px] mr-[-30px] text-xs text-right  font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
+                PRO
+              </p>
+            )}
           </h2>
         </div>
         <div className="flex justify-start gap-12 ">
@@ -121,7 +127,7 @@ export default function SingleProject({ ...props }) {
                   });
                 }}
               >
-                {tab.name == "Share" && (
+                {tab.name == "Share" && !project.is_pro && (
                   // <div>
                   <p className="absolute top-0 right-0 mt-[-10px] mr-[-10px] text-xs text-right  font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
                     PRO
@@ -228,6 +234,9 @@ export default function SingleProject({ ...props }) {
               ></SingleContext>
             </div>
           </div>
+        )}
+        {isActiveTab("Share") && (
+          <ShareProject project={project} cb={fetchAndUpdateProject} />
         )}
       </div>
     </div>

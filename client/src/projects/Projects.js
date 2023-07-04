@@ -7,10 +7,12 @@ import ListView from "../elements/ListView";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PLTooltip from "../elements/PLTooltip";
+import PLGrid from "../elements/PLGrid";
+import PLCard from "../elements/PLCard";
 
 export default function Projects() {
   const params = useParams();
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState({ owned: [], shared: [] });
   const [noProjects, setNoProjects] = useState(false);
   const [open, setOpen] = useState(false);
   const jwt = auth.isAuthenticated();
@@ -27,11 +29,18 @@ export default function Projects() {
       if (data && data.error) {
         console.log(data.error);
       } else {
-        if (!data.length) setNoProjects(true);
-        data.map((project) => {
+        console.log(data);
+        if (!data.owned.length && !data.shared.length) setNoProjects(true);
+        data.owned.map((project) => {
           project.created = `Created ${dayjs(project.created).fromNow(
             true
-          )} ago`;
+          )} ago by ${project.owner_username}`;
+          project.linkPath = `/project/${project._id}`;
+        });
+        data.shared.map((project) => {
+          project.created = `Created ${dayjs(project.created).fromNow(
+            true
+          )} ago by ${project.owner_username}`;
           project.linkPath = `/project/${project._id}`;
         });
         setProjects(data);
@@ -111,12 +120,30 @@ export default function Projects() {
         open={open}
         setOpen={setOpen}
       />
-      <ListView
-        data={projects}
-        noData={noProjects}
-        contentKeys={["name", "model", "created"]}
-        linkKey="linkPath"
-      />
+      <h3 className="text-lg text-white mb-3">Your Projects</h3>
+      <PLGrid>
+        {projects.owned.map((p, i) => (
+          <PLCard
+            key={i}
+            title={p.name}
+            subTitle1={p.created}
+            linkTo={`/project/${p._id}`}
+            pro={p.is_pro}
+          ></PLCard>
+        ))}
+      </PLGrid>
+      <h3 className="text-lg text-white my-3">Shared with you</h3>
+      <PLGrid>
+        {projects.shared.map((p, i) => (
+          <PLCard
+            key={i}
+            title={p.name}
+            subTitle1={p.created}
+            linkTo={`/project/${p._id}`}
+            pro={p.is_pro}
+          ></PLCard>
+        ))}
+      </PLGrid>
     </>
   );
 }
