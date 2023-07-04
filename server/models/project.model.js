@@ -49,6 +49,13 @@ ProjectSchema.methods.isPro = async function () {
   return owner.is_pro;
 };
 
+ProjectSchema.methods.getOwnerUsername = async function () {
+  console.log(this.owner);
+  let owner = await User.findById(this.owner);
+  console.log(owner.is_pro);
+  return owner.username;
+};
+
 ProjectSchema.set("toObject", { virtuals: true });
 ProjectSchema.set("toJSON", { virtuals: true });
 
