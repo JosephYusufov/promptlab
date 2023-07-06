@@ -31,7 +31,7 @@ const intentById = async (req, res, next, id) => {
   } catch (err) { //handle errors with database
     console.log(err)
     return res.status(400).json({
-      error: "Could not retrieve intent",
+      error: errorHandler.getErrorMessage(err),
     });
   }
 };
