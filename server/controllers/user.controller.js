@@ -45,6 +45,24 @@ const userByID = async (req, res, next, id) => {
 }
 
 /**
+ * Retrieves a user by ID and checks if the user is pro
+ * @param id
+ * @returns {Promise<void>}
+ */
+const returnUser = async (id) => {
+  try {
+    let user = await User.findById(id)
+
+    if (!user)
+      return undefined
+
+    return user;
+
+  } catch (err) {
+    return undefined;
+  }
+}
+/**
  * Read a user's information, replacing their hashed password and salt
  * @param req
  * @param res
@@ -125,5 +143,6 @@ export default {
   read,
   list,
   remove,
-  update
+  update,
+  returnUser
 }

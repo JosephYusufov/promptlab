@@ -54,8 +54,10 @@ router
         authCtrl.requireSignin,
         intentCtrl.hasAuthorization,
         intentCtrl.getPrice
-    )
+    );
+
 router.param("userId", userCtrl.userByID); //define the userId parameter
 router.param("intentId", intentCtrl.intentById); //define the intentId parameter
+
 
 export default router;
