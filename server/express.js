@@ -12,6 +12,7 @@ import intentRoutes from "./routes/intent.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import contextRoutes from "./routes/context.routes.js";
 import stripeRoutes from "./routes/stripe.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -69,7 +70,8 @@ app.use("/", promptRoutes);
 app.use("/", intentRoutes);
 app.use("/", contextRoutes);
 app.use("/", projectRoutes);
-app.use("/", stripeRoutes);
+//app.use("/", stripeRoutes);
+app.use("/", commentRoutes);
 
 // app.get('*', (req, res) => {
 //   // const sheets = new ServerStyleSheets()

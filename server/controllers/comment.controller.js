@@ -2,6 +2,7 @@ import Intent from "../models/intent.model.js";
 import Prompt from "../models/prompt.model.js";
 import Comment from "../models/comment.model.js"
 import errorHandler from "../helpers/dbErrorHandler.js";
+import userCtrl from "./user.controller.js"
 
 
 /**
@@ -41,21 +42,27 @@ const create = async (req, res) => {
 
     let user = req.auth;
 
-    if (!req.body.intent)
+    if (!req.intent)
         return res.status(400).json({
-            message: 'An intent is required in the request body'
+            message: 'An intent is required in the request'
         })
 
-    const intent = req.body.intent;
+    const intent = req.intent;
 
-    const owner = intent.owner;
+    const owner_id = intent.user;
+    const owner = await userCtrl.returnUser(owner_id)
 
-    if (!owner.is_pro)
+    if (!owner) {
+        res.json('Owner not found in database!')
+    }
+
+    if (!owner.is_pro) {
         return res.status(400).json({
-            message: 'The Owner of the Project must be Pro for comments to be enabled'
+            message: 'Owner must be pro to create comments'
         })
+    }
 
-    let comment = new Comment({...req.body, user: user._id})
+    let comment = new Comment({...req.body, intent: intent, user: user._id})
 
     try {
         await comment.save();
@@ -67,6 +74,10 @@ const create = async (req, res) => {
             error: errorHandler.getErrorMessage(err)
         })
     }
+
+}
+
+const createReply = async (req, res) => {
 
 }
 
