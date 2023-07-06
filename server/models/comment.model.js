@@ -16,6 +16,16 @@ const CommentSchema = new mongoose.Schema({
         ref: "comment",
         required: false,
     },
+    children: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'comment',
+        required:false,
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
     updated: {
         type: Date,
         default: Date.now,
