@@ -15,6 +15,11 @@ router
     .route("/api/:intentId/createcomment")
     .post(authCtrl.requireSignin, intentCtrl.hasAuthorization, commentCtrl.create)
 
+router
+    .route("/api/:intentId/:parentId/reply")
+    .post(authCtrl.requireSignin, intentCtrl.hasAuthorization, commentCtrl.createReply)
+
 router.param("intentId", intentCtrl.intentById);
+router.param("parentId", commentCtrl.commentById);
 
 export default router

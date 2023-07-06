@@ -3,6 +3,7 @@ import Prompt from "../models/prompt.model.js";
 import Comment from "../models/comment.model.js"
 import errorHandler from "../helpers/dbErrorHandler.js";
 import userCtrl from "./user.controller.js"
+import DbErrorHandler from "../helpers/dbErrorHandler.js";
 
 
 /**
@@ -16,7 +17,10 @@ import userCtrl from "./user.controller.js"
 const commentById = async (req, res, next, id) => {
 
     try {
-        let comment = await Comment.findById(id).populate('comments')
+
+        let comment = await Comment.findById(id)
+
+        console.log(comment);
 
         if (!comment)
             return res.status(400).json({
@@ -27,7 +31,7 @@ const commentById = async (req, res, next, id) => {
         next();
     } catch (err) {
         return res.status(400).json({
-            error: 'Could not retrieve intent'
+            error: DbErrorHandler.getErrorMessage(err)
         })
     }
 }
@@ -77,7 +81,42 @@ const create = async (req, res) => {
 
 }
 
+/**
+ * Creates a comment in the form of a reply given a parent comment and an intent
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 const createReply = async (req, res) => {
+    if (!req.comment)
+        return res.status(400).json({
+            message: "Must have a parent comment in the request"
+        })
+
+    if (!req.intent)
+        return res.status(400).json({
+            message: "Must have an intent in the request"
+        })
+
+    const intent = req.intent;
+    const parent = req.comment;
+    const user = req.auth;
+
+    const comment = new Comment({...req.body, intent: intent._id, parent: parent._id, user: user._id})
+
+    try {
+        await comment.save()
+        parent.children.push(comment._id)
+        parent.save();
+
+        return res.status(200).json({
+            message: "Comment Created and Parent Associated"
+        })
+    } catch (err) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
 
 }
 
@@ -115,5 +154,6 @@ export default {
     commentById,
     create,
     list,
-    read
+    read,
+    createReply
 }
