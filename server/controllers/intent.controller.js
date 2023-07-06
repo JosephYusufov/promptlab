@@ -1,7 +1,7 @@
 import Intent from "../models/intent.model.js";
 import Prompt from "../models/prompt.model.js";
 import errorHandler from "../helpers/dbErrorHandler.js";
-import { generateResponse, generatePrompt } from "../vendors/openAI/index.js";
+import { generateResponse, generatePrompt, getPriceCompletion } from "../vendors/openAI/index.js";
 import projectCtrl from "./project.controller.js";
 
 /**
@@ -29,6 +29,7 @@ const intentById = async (req, res, next, id) => {
     req.intent = intent;
     next();
   } catch (err) { //handle errors with database
+    console.log(err)
     return res.status(400).json({
       error: "Could not retrieve intent",
     });
@@ -393,6 +394,78 @@ const getPrompt = async (req, res) => {
   else res.json(resp);
 };
 
+const getPrice = (req, res) => {
+
+  if (!req.body.context) {
+    return res.status(400).json({
+      error: "No Context Provided",
+    });
+  }
+  const context = req.body.context;
+
+
+  //get intent object and select most recent prompt
+  const intent = req.intent;
+
+  const promptText = intent.prompts.slice(-1)[0].text;
+
+  //select and replace context placeholders with context
+  const exp = /{{.+?}}/gm;
+  const matches = promptText.match(exp);
+  let editedPrompt = promptText;
+  const len = Object.keys(context).length;
+
+  //require that contexts match
+  if (len !== matches.length) {
+    return res.status(400).json({
+      error: "Mismatch between context length and variable length in prompt.",
+    });
+  }
+
+  //replace contexts if the names match
+  if (len !== 0) {
+    for (let i = 0; i < len; i++) {
+      const cont_braces = "{{" + Object.keys(context)[i] + "}}";
+      const cur_match = matches[i];
+
+      if (cont_braces !== cur_match) {
+        return res.status(400).json({
+          error: "Variable in context does not match variable in prompt!",
+        });
+      } else {
+        editedPrompt = editedPrompt.replace(
+            editedPrompt.match(cur_match),
+            context[Object.keys(context)[i]]
+        );
+      }
+    }
+  }
+
+  if (!req.intent || !req.body.type) {
+    res.status(400).json({
+      error: "Type of Completion not provided"
+    })
+  }
+
+  const type = req.body.type;
+  const prompt = req.intent;
+
+  if (type === 'completion') {
+
+
+    const price = getPriceCompletion(editedPrompt);
+    console.log(price)
+    res.json(price);
+  } else if (type === 'prompt') {
+    res.json('Placeholder for prompt')
+  } else {
+    res.status(400).json({
+      error: "Type invalid! Options are: completion, prompt"
+    })
+  }
+
+}
+
 export default {
   create,
   read,
@@ -404,4 +477,5 @@ export default {
   getPrompt,
   createPrompt,
   hasAuthorization,
+  getPrice,
 };
