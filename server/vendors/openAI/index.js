@@ -1,4 +1,5 @@
-import { Configuration, OpenAIApi } from "openai";
+import {Configuration, OpenAIApi} from "openai";
+import {encode} from "gpt-3-encoder";
 import config from "../../config.js";
 
 //create configuration with the openai api key/organization information from .env
@@ -90,7 +91,7 @@ export const generatePrompt = async (
   gradientPrompt += `Give one reason why the prompt could have gotten this examples wrong.
   Wrap the reason with <START> and <END>.\n`;
 
-  //build and submit gradientPrmopt to openAI
+  //build and submit gradient prompt to openAI
   const openai = new OpenAIApi(configuration);
   const response = await openai.createChatCompletion({
     model: config.openaiModel,
@@ -234,6 +235,25 @@ export const checkForPrompt = async (potPrompt) => {
   });
 };
 
-const getPrice = (prompt) => {
+/**
+ * Gets the prompt for a chat completion based off of gpt-3.5-turbo. $0.02/1k tokens I/O
+ * Assumes 1000 tokens for output - that's the max set in the function to generate chat completions
+ * @param prompt
+ * @returns {number}
+ */
+export const getPriceCompletion = (prompt) => {
+    const prompt_tokenized = encode(prompt);
 
+    const prompt_length = prompt_tokenized.length;
+
+    return prompt_length * 2 / 1000 + 2
+}
+
+export const getPricePrompt = (prompt) => {
+
+  const prompt_tokenized = encode(prompt)
+
+  const prompt_length = prompt_tokenized.length;
+
+  return prompt_length * 2 / 1000 + 200
 }

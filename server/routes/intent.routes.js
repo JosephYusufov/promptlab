@@ -46,6 +46,15 @@ router
     intentCtrl.getPrompt
   );
 
+
+//get price of a completion from an intent
+router
+    .route("/api/intent/:intentId/completionprice")
+    .get(
+        authCtrl.requireSignin,
+        intentCtrl.hasAuthorization,
+        intentCtrl.getPrice
+    )
 router.param("userId", userCtrl.userByID); //define the userId parameter
 router.param("intentId", intentCtrl.intentById); //define the intentId parameter
 
